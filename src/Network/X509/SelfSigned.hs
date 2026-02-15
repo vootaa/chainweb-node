@@ -8,6 +8,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PackageImports #-}
 {-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
@@ -113,16 +114,16 @@ import qualified Crypto.PubKey.RSA.PKCS15 as RSA (signSafer)
 import qualified Crypto.PubKey.RSA.Types as RSA (KeyPair(..), toPublicKey)
 import Crypto.Random.Types (MonadRandom)
 
-import Data.ASN1.BinaryEncoding (DER(..))
-import Data.ASN1.Encoding (decodeASN1', encodeASN1')
-import Data.ASN1.Types
+import "crypton-asn1-encoding" Data.ASN1.BinaryEncoding (DER(..))
+import "crypton-asn1-encoding" Data.ASN1.Encoding (decodeASN1', encodeASN1')
+import "crypton-asn1-types" Data.ASN1.Types
 import Data.Bifunctor
 import Data.ByteArray (ByteArray, convert)
 import qualified Data.ByteString as B (ByteString, length, pack)
 import qualified Data.ByteString.Char8 as B8
 import Data.Foldable
 import Data.Hashable
-import Data.Hourglass (DateTime, durationHours, timeAdd)
+import "time-hourglass" Data.Hourglass (DateTime, durationHours, timeAdd)
 import qualified Data.List as L
 import qualified Data.List.NonEmpty as NE
 import Data.PEM (PEM(..), pemParseBS, pemWriteBS)
@@ -145,7 +146,7 @@ import Network.TLS.Extra (ciphersuite_default)
 import Network.Wai.Handler.WarpTLS as WARP
     (TLSSettings(..), tlsSettingsChainMemory, tlsSettingsMemory)
 
-import System.Hourglass (dateCurrent)
+import "time-hourglass" Time.System (dateCurrent)
 import System.X509 (getSystemCertificateStore)
 
 -- internal modules

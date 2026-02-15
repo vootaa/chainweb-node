@@ -1,4 +1,4 @@
-cabal-version: 3.16
+cabal-version: 3.8
 
 name:         chainweb
 version:      2.33.0
@@ -388,6 +388,8 @@ library
         , configuration-tools >= 0.6
         , containers >= 0.5
         , crypton >= 0.31
+        , crypton-asn1-encoding
+        , crypton-asn1-types
         , crypton-connection >= 0.4.2
         , crypton-x509 >=1.7
         , crypton-x509-system >=1.6
@@ -453,6 +455,7 @@ library
         , text >= 2.0
         , these >= 1.0
         , time >= 1.12.2
+        , time-hourglass >= 0.3
         , tls >=2.1.4
         , tls-session-manager >= 0.0
         , token-bucket >= 0.1
