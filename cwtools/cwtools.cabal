@@ -1,7 +1,7 @@
-cabal-version: 3.8
+cabal-version: 3.16
 
 name:         cwtools
-version:      2.32.0
+version:      2.33.0
 synopsis:     A collection of various tools for Chainweb users and developers.
 description:  A collection of various tools for Chainweb users and developers.
 homepage:     https://github.com/kadena-io/chainweb
@@ -15,8 +15,7 @@ category:     Blockchain, Currency, Bitcoin, Kadena
 build-type:   Simple
 
 tested-with:
-    GHC == 9.10
-    GHC == 9.8
+    GHC == 9.12.2
 
 extra-source-files:
    README.md
