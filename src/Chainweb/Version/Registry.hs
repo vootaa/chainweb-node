@@ -1,6 +1,5 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 {-# LANGUAGE MonoLocalBinds #-}
-{-# LANGUAGE NamedFieldPuns #-}
 -- |
 -- Module: Chainweb.Version.Registry
 -- Copyright: Copyright © 2023 Kadena LLC.
@@ -77,7 +76,7 @@ registerVersion v = do
 -- | Unregister a version from the registry. This is ONLY for testing versions.
 unregisterVersion :: HasCallStack => ChainwebVersion -> IO ()
 unregisterVersion v = do
-    if elem (_versionCode v) (_versionCode <$> [mainnet, testnet04, mono, triad, icosa])
+    if _versionCode v `elem` (_versionCode <$> [mainnet, testnet04, mono, triad, icosa])
     then error "You cannot unregister mainnet, testnet04, mono, triad, or icosa versions"
     else atomicModifyIORef' versionMap $ \m -> (HM.delete (_versionCode v) m, ())
 
@@ -90,7 +89,7 @@ validateVersion v = do
         hasAllChains (OnChains m) = HS.fromMap (void m) == chainIds v
         errors = concat
             [ [ "validateVersion: version does not have heights for all forks"
-                | not (HS.fromMap (void $ _versionForks v) == HS.fromList [minBound :: Fork .. maxBound :: Fork]) ]
+                | HS.fromMap (void $ _versionForks v) /= HS.fromList [minBound :: Fork .. maxBound :: Fork] ]
             , [ "validateVersion: version is missing fork heights for some forks on some chains"
                 | not (all hasAllChains (_versionForks v)) ]
             , [ "validateVersion: chain graphs do not decrease in block height"
@@ -98,11 +97,11 @@ validateVersion v = do
             , [ "validateVersion: block gas limits do not decrease in block height"
                 | not (ruleValid (_versionMaxBlockGasLimit v)) ]
             , [ "validateVersion: genesis data is missing for some chains"
-                | not (and
-                    [ hasAllChains (_genesisBlockPayload $ _versionGenesis v)
-                    , hasAllChains (_genesisBlockTarget $ _versionGenesis v)
-                    , hasAllChains (_genesisTime $ _versionGenesis v)
-                    ])]
+                | not
+                    ( hasAllChains (_genesisBlockPayload $ _versionGenesis v)
+                    && hasAllChains (_genesisBlockTarget $ _versionGenesis v)
+                    && hasAllChains (_genesisTime $ _versionGenesis v)
+                    )]
             , [ "validateVersion: some pact upgrade has no transactions"
                 | any (any isUpgradeEmpty) (_versionUpgrades v) ]
             -- TODO: check that pact 4/5 upgrades are only enabled when pact 4/5 is enabled
