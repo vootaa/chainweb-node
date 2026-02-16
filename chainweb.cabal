@@ -268,10 +268,13 @@ library
         , Chainweb.Version
         , Chainweb.Version.Development
         , Chainweb.Version.Guards
+        , Chainweb.Version.Icosa
         , Chainweb.Version.Mainnet
+        , Chainweb.Version.Mono
         , Chainweb.Version.RecapDevelopment
         , Chainweb.Version.Registry
         , Chainweb.Version.Testnet04
+        , Chainweb.Version.Triad
         , Chainweb.Version.Utils
         , Chainweb.WebBlockHeaderDB
         , Chainweb.WebPactExecutionService
