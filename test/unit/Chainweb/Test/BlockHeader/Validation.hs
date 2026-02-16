@@ -270,19 +270,19 @@ validationFailures =
       , [IncorrectHash, IncorrectPow]
       )
     , ( hdr & testHeaderHdr . blockHash .~ nullBlockHash
-      , [IncorrectHash]
+      , [IncorrectHash, IncorrectPow]
       )
     , ( hdr & testHeaderHdr . blockCreationTime .~ (view blockCreationTime . _parentHeader $ _testHeaderParent hdr)
       , [IncorrectHash, IncorrectPow, CreatedBeforeParent]
       )
     , ( hdr & testHeaderHdr . blockHash %~ messWords encodeBlockHash decodeBlockHash (flip complementBit 0)
-      , [IncorrectHash]
+      , [IncorrectHash, IncorrectPow]
       )
     , ( hdr & testHeaderHdr . blockTarget %~ messWords encodeHashTarget decodeHashTarget (flip complementBit 0)
       , [IncorrectHash, IncorrectPow, IncorrectTarget]
       )
     , ( hdr & testHeaderParent . coerced . blockHeight .~ 318359
-      , [IncorrectHeight, IncorrectEpoch, IncorrectTarget]
+      , [IncorrectPow, IncorrectHeight, IncorrectEpoch, IncorrectTarget]
       )
     , ( hdr & testHeaderHdr . blockParent %~ messWords encodeBlockHash decodeBlockHash (flip complementBit 0)
       , [MissingParent]
@@ -333,10 +333,10 @@ validationFailures =
       , [IncorrectHash, IncorrectPow, AdjacentChainMismatch]
       )
     , ( hdr & testHeaderAdjs . each . parentHeader . blockChainwebVersion .~ _versionCode RecapDevelopment
-      , [InvalidAdjacentVersion]
+      , [IncorrectPow, InvalidAdjacentVersion]
       )
     , ( hdr & testHeaderAdjs . ix 0 . parentHeader . blockChainId .~ unsafeChainId 0
-      , [AdjacentParentChainMismatch]
+      , [IncorrectPow, AdjacentParentChainMismatch]
       )
     ]
   where
@@ -409,7 +409,10 @@ forkValidation =
     , ( hdr
         & p . blockForkVotes .~ addVote (addVote resetVotes)
         & h . blockForkVotes .~ resetVotes
-      , [ {- no change to h -} InvalidForkVotes, InvalidForkVotes ]
+      , [ IncorrectPow {- no change to h -}
+        , InvalidForkVotes
+        , InvalidForkVotes
+        ]
       )
     , ( hdr
         & p . blockForkVotes .~ addVote (addVote resetVotes)
@@ -470,7 +473,7 @@ forkValidation =
     , ( hdr2
             & p . blockForkVotes %~ (addVote . addVote)
             & h . blockForkVotes .~ resetVotes
-      , [{- votes are already zero in hdr1-}]
+      , [IncorrectPow {- votes are already zero in hdr1-}]
       )
     -- Test 20
     , ( hdr2
@@ -504,7 +507,7 @@ forkValidation =
         & p . blockForkVotes .~ int forkEpochLength * voteStep
         & h . blockForkVotes .~ resetVotes
         & h . blockForkNumber .~ view (p . blockForkNumber) hdr2
-      , [IncorrectForkNumber]
+      , [IncorrectPow, IncorrectForkNumber]
       )
     , ( hdr2
         & p . blockForkVotes .~ int forkEpochLength * voteStep
@@ -517,7 +520,7 @@ forkValidation =
         & p . blockForkVotes .~ (voteLength * 2 `quot` 3 - 1) * voteStep
         & h . blockForkVotes .~ resetVotes
         & h . blockForkNumber .~ view (p . blockForkNumber) hdr2
-      , []
+      , [IncorrectPow]
       )
     , ( hdr2
         & p . blockForkVotes .~ (voteLength * 2 `quot` 3 - 1) * voteStep
@@ -535,7 +538,7 @@ forkValidation =
         & p . blockForkVotes .~ (voteLength * 2 `quot` 3 + 1) * voteStep
         & h . blockForkVotes .~ resetVotes
         & h . blockForkNumber .~ view (p . blockForkNumber) hdr2
-      , [IncorrectForkNumber]
+      , [IncorrectPow, IncorrectForkNumber]
       )
     ]
 
@@ -650,15 +653,15 @@ daValidation =
 
 legacyDaValidation :: [(TestHeader, [ValidationFailureType])]
 legacyDaValidation =
-    [ (hdr, [])
+  [ (hdr, [IncorrectPow])
     , ( hdr & h . blockTarget . hashTarget %~ succ
       , [IncorrectHash, IncorrectPow, IncorrectWeight, IncorrectTarget]
       )
     , ( hdr & p . blockEpochStart .~ EpochStartTime epoch
-      , [IncorrectTarget]
+      , [IncorrectPow, IncorrectTarget]
       )
     , ( hdr & p . blockCreationTime .~ BlockCreationTime epoch
-      , [IncorrectTarget, IncorrectEpoch]
+      , [IncorrectPow, IncorrectTarget, IncorrectEpoch]
       )
     ]
   where
