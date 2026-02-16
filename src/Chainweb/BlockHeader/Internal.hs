@@ -179,6 +179,7 @@ import Control.Monad.Catch
 import Crypto.Hash.Algorithms
 import Data.Aeson
 import Data.Aeson.Types (Parser)
+import Data.ByteString qualified as B
 import Data.Function (on)
 import Data.HashMap.Strict (HashMap)
 import Data.HashMap.Strict qualified as HM
@@ -189,6 +190,7 @@ import Data.Kind
 import Data.Memory.Endian qualified as BA
 import Data.MerkleLog hiding (Actual, Expected, MerkleHash)
 import Data.Text qualified as T
+import Data.Text.Encoding qualified as T
 import Data.Word
 import GHC.Generics (Generic)
 import GHC.Stack
@@ -695,8 +697,9 @@ genesisBlockHeaders :: ChainwebVersion -> HashMap ChainId BlockHeader
 genesisBlockHeaders = \v ->
     if _versionCode v == _versionCode mainnet then mainnetGenesisHeaders
     else if _versionCode v == _versionCode testnet04 then testnetGenesisHeaders
-    else unsafeDupablePerformIO $
-        HM.lookup (_versionCode v) <$> readIORef genesisBlockHeaderCache >>= \case
+    else unsafeDupablePerformIO $ do
+        m <- readIORef genesisBlockHeaderCache
+        case HM.lookup (_versionCode v) m of
             Just hs -> return hs
             Nothing -> do
                 let freshGenesisHeaders = makeGenesisBlockHeaders v
@@ -980,8 +983,15 @@ computeBlockHash h = BlockHash $ MerkleLogHash $ computeMerkleLogRoot h
 -- the value of '_blockTarget' (interpreted as 'BlockHashNat').
 --
 _blockPow :: BlockHeader -> PowHash
-_blockPow h = cryptoHash @Blake2s_256
-    $ runPutS $ encodeBlockHeaderWithoutHash h
+_blockPow h = cryptoHash @Blake2b_256
+    $ vootaaPowDomainPrefix (_blockChainwebVersion h)
+        <> runPutS (encodeBlockHeaderWithoutHash h)
+
+vootaaPowDomainPrefix :: ChainwebVersionCode -> B.ByteString
+vootaaPowDomainPrefix v =
+    "Vootaa-POW-PS1|"
+        <> T.encodeUtf8
+            (getChainwebVersionName (_versionName (lookupVersionByCode v)))
 
 blockPow :: Getter BlockHeader PowHash
 blockPow = to _blockPow

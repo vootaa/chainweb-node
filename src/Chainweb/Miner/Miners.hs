@@ -1,4 +1,3 @@
-{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleContexts #-}
@@ -8,7 +7,6 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE TypeOperators #-}
 
 -- |
 -- Module: Chainweb.Miner.Miners
@@ -36,7 +34,7 @@ import Control.Concurrent.Async (race)
 import Control.Lens
 import Control.Monad
 
-import Crypto.Hash.Algorithms (Blake2s_256)
+import Crypto.Hash.Algorithms (Blake2b_256)
 
 import qualified Data.ByteString.Short as BS
 import Data.HashMap.Strict (HashMap)
@@ -151,4 +149,4 @@ localPOW lf coord m cdb = runForever lf "Chainweb.Miner.Miners.localPOW" $ do
             void $ awaitNewCut cdb c
   where
     go :: WorkHeader -> IO SolvedWork
-    go = mine @Blake2s_256 (Nonce 0)
+    go = mine @Blake2b_256 (Nonce 0)
