@@ -216,9 +216,17 @@ randomChainId v = randomChainIdAt v maxBound
 -- | Uniformily get a random ChainId at the given height of the chainweb
 --
 randomChainIdAt :: HasChainwebVersion v => v -> BlockHeight -> IO ChainId
-randomChainIdAt v h = (!!) (toList cs) <$> randomRIO (0, length cs - 1)
-  where
-    cs = chainIdsAt v h
+randomChainIdAt v h =
+    let cs = chainIdsAt v h
+        atIndexUnsafe :: [a] -> Int -> a
+        atIndexUnsafe xs n = case drop n xs of
+            (x:_) -> x
+            [] -> error "randomChainIdAt: index out of bounds"
+    in case toList cs of
+        [] -> error "randomChainIdAt: empty chain id set"
+        chainIdList -> do
+            idx <- randomRIO (0, length chainIdList - 1)
+            pure $ chainIdList `atIndexUnsafe` idx
 {-# INLINE randomChainIdAt #-}
 
 -- | Sometimes, in particular for testing and examples, some fixed chain id is

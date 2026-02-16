@@ -625,7 +625,9 @@ applyCoinbase v logger dbEnv reward@(ParsedDecimal d) txCtx
             CommandResult
               { _crReqKey = rk
               , _crTxId = _erTxId er
-              , _crResult = PactResult (Right (last (_erOutput er)))
+                , _crResult = PactResult (Right (case reverse (_erOutput er) of
+                  (o:_) -> o
+                  [] -> error "coinbase tx: empty eval output"))
               , _crGas = _erGas er
               , _crLogs = Just logs
               , _crContinuation = _erExec er
@@ -945,7 +947,7 @@ applyExec initialGas interp em senderSigs verifiers hsh nsp = do
 
     -- applyExec enforces non-empty expression set so `last` ok
     -- forcing it here for lazy errors. TODO NFData the Pacts
-    let !lastResult = force $ last _erOutput
+    let !lastResult = force $ case reverse _erOutput of { (o:_) -> o; [] -> error "applyExec: empty eval output" }
     return $ CommandResult rk _erTxId (PactResult (Right lastResult))
       _erGas (Just logs) _erExec Nothing _erEvents
 
@@ -1062,8 +1064,9 @@ applyContinuation initialGas interp cm senderSigs hsh nsp = do
     -- set tx warnings to eval warnings
     txWarnings <>= _erWarnings
 
-    -- last safe here because cont msg is guaranteed one exp
-    return $! CommandResult rk _erTxId (PactResult (Right (last _erOutput)))
+    return $! CommandResult rk _erTxId (PactResult (Right (case reverse _erOutput of
+      (o:_) -> o
+      [] -> error "applyContinuation: empty eval output")))
       _erGas (Just logs) _erExec Nothing _erEvents
 
 

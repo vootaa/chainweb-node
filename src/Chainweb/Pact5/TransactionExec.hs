@@ -432,8 +432,9 @@ applyCmd logger maybeGasLogger db txCtx txIdxInBlock spv initialGas cmd = do
                 { _crReqKey = RequestKey $ _cmdHash cmd
                 , _crTxId = _erTxId payloadResult
                 , _crResult =
-                    -- TODO: don't use `last` here for GHC 9.10 compat
-                    PactResultOk $ compileValueToPactValue $ last $ _erOutput payloadResult
+                    PactResultOk $ compileValueToPactValue $ case reverse (_erOutput payloadResult) of
+                      (o:_) -> o
+                      [] -> error "applyCmd: empty payload result output"
                 , _crGas = gasUsed
                 , _crLogs = Just $ _erLogs buyGasResult <> _erLogs payloadResult <> _erLogs redeemGasResult
                 , _crContinuation = _erExec payloadResult
@@ -507,8 +508,9 @@ applyCoinbase logger db reward txCtx = do
         { _crReqKey = RequestKey coinbaseHash
         , _crTxId = _erTxId coinbaseTxResult
         , _crResult =
-          -- TODO: don't use `last` for GHC 9.10 compat
-          PactResultOk $ compileValueToPactValue $ last $ _erOutput coinbaseTxResult
+          PactResultOk $ compileValueToPactValue $ case reverse (_erOutput coinbaseTxResult) of
+            (o:_) -> o
+            [] -> error "applyCoinbase: empty coinbase output"
         , _crGas = _erGas coinbaseTxResult
         , _crLogs = Just $ _erLogs coinbaseTxResult
         , _crContinuation = _erExec coinbaseTxResult
@@ -595,7 +597,9 @@ runGenesisPayload logger db spv ctx cmd = do
             CommandResult
               { _crReqKey = RequestKey (_cmdHash cmd)
               , _crTxId = _erTxId evalResult
-              , _crResult = PactResultOk (compileValueToPactValue $ last $ _erOutput evalResult)
+                , _crResult = PactResultOk (compileValueToPactValue $ case reverse (_erOutput evalResult) of
+                  (o:_) -> o
+                  [] -> error "runGenesisPayload: empty eval result output")
               , _crGas = _erGas evalResult
               , _crLogs = Just $ _erLogs evalResult
               , _crContinuation = _erExec evalResult
