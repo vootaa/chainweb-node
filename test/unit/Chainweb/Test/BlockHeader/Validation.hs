@@ -226,28 +226,33 @@ prop_pow_blake2b_domain_prefix = testGroup "pow Blake2b + domain prefix"
         (forM_ samples checkSample)
 
     , testCase "domain prefix separates hash for same header bytes"
-    (let hdr = _testHeaderHdr (genesisTestHeaders Mono !! 0)
-             bytes = runPutS (encodeBlockHeaderWithoutHash hdr)
-       hMono = cryptoHash @Blake2b_256 (vootaaPrefix (_versionCode Mono) <> bytes)
-       hTriad = cryptoHash @Blake2b_256 (vootaaPrefix (_versionCode Triad) <> bytes)
-       hIcosa = cryptoHash @Blake2b_256 (vootaaPrefix (_versionCode Icosa) <> bytes)
-     in assertBool
-        "Different domain prefixes should produce different pow hashes"
-        (hMono /= hTriad && hTriad /= hIcosa && hMono /= hIcosa))
+      (checkDomainSeparation (_testHeaderHdr (genesisTestHeaders Mono !! 0)))
     ]
   where
+    samples :: [(String, BlockHeader)]
     samples =
-    [ ("mono", _testHeaderHdr (genesisTestHeaders Mono !! 0))
-    , ("triad", _testHeaderHdr (genesisTestHeaders Triad !! 0))
-    , ("icosa", _testHeaderHdr (genesisTestHeaders Icosa !! 0))
+      [ ("mono", _testHeaderHdr (genesisTestHeaders Mono !! 0))
+      , ("triad", _testHeaderHdr (genesisTestHeaders Triad !! 0))
+      , ("icosa", _testHeaderHdr (genesisTestHeaders Icosa !! 0))
         ]
 
+    checkSample :: (String, BlockHeader) -> Assertion
     checkSample (sampleName, hdr) = do
         let input = vootaaPrefix (_blockChainwebVersion hdr) <> runPutS (encodeBlockHeaderWithoutHash hdr)
             expected = cryptoHash @Blake2b_256 input
             legacy = cryptoHash @Blake2s_256 input
         _blockPow hdr @?= expected
         assertBool ("PoW unexpectedly equals legacy Blake2s_256 for " <> sampleName) (_blockPow hdr /= legacy)
+
+    checkDomainSeparation :: BlockHeader -> Assertion
+    checkDomainSeparation hdr =
+        let bytes = runPutS (encodeBlockHeaderWithoutHash hdr)
+            hMono = cryptoHash @Blake2b_256 (vootaaPrefix (_versionCode Mono) <> bytes)
+            hTriad = cryptoHash @Blake2b_256 (vootaaPrefix (_versionCode Triad) <> bytes)
+            hIcosa = cryptoHash @Blake2b_256 (vootaaPrefix (_versionCode Icosa) <> bytes)
+         in assertBool
+            "Different domain prefixes should produce different pow hashes"
+            (hMono /= hTriad && hTriad /= hIcosa && hMono /= hIcosa)
 
 vootaaPrefix :: ChainwebVersionCode -> B.ByteString
 vootaaPrefix v =
