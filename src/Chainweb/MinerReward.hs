@@ -1,6 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE MultiWayIf #-}
@@ -70,7 +69,7 @@ import Data.ByteString qualified as B
 import Data.ByteString.Lazy qualified as BL
 import Data.Csv qualified as CSV
 import Data.Decimal
-import Data.FileEmbed (embedFile)
+import Data.FileEmbed (embedFileRelative)
 import Data.Foldable
 import Data.Map.Strict qualified as M
 import Data.Ratio
@@ -241,7 +240,7 @@ mkMinerRewards =
             let rewards = M.fromList . V.toList . V.map formatRow $ vs
             in if minerRewardsHash rewards == expectedMinerRewardsHash
                 then rewards
-                else error $ "hash of miner rewards table does not match expected hash"
+                else error "hash of miner rewards table does not match expected hash"
   where
     formatRow :: (Word64, CsvDecimal) -> (BlockHeight, Stu)
     formatRow (a, b) = (BlockHeight $ int a, kdaToStu (Kda $ _csvDecimal b))
@@ -258,7 +257,7 @@ rawMinerRewards
     | rawMinerRewardsHash rawBytes == expectedRawMinerRewardsHash = rawBytes
     | otherwise = error "hash of raw miner rewards file does not match expected value."
   where
-    rawBytes = $(embedFile "rewards/miner_rewards.csv")
+    rawBytes = $(embedFileRelative "rewards/miner_rewards.csv")
 
 -- --------------------------------------------------------------------------
 -- Consistency Checks

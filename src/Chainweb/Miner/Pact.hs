@@ -46,7 +46,7 @@ import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.Csv as CSV
 import Data.Decimal (Decimal)
-import Data.FileEmbed (embedFile)
+import Data.FileEmbed (embedFileRelative)
 import Data.Hashable
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as M
@@ -103,8 +103,8 @@ instance J.Encode Miner where
     {-# INLINE build #-}
 
 instance FromJSON Miner where
-    parseJSON = withObject "Miner" $ \o -> Miner
-        <$> (MinerId <$> o .: "account")
+  parseJSON = withObject "Miner" $ \o ->
+    (Miner . MinerId <$> (o .: "account"))
         <*> (MinerKeys <$> (Pact4.KeySet <$> o .: "public-keys" <*> o .: "predicate"))
 
 -- | A lens into the miner id of a miner.
@@ -171,5 +171,5 @@ readRewards =
 -- | Read in the reward csv via TH for deployment purposes.
 --
 rawMinerRewards :: ByteString
-rawMinerRewards = $(embedFile "rewards/miner_rewards.csv")
+rawMinerRewards = $(embedFileRelative "rewards/miner_rewards.csv")
 {-# NOINLINE rawMinerRewards #-}
