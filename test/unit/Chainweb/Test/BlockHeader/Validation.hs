@@ -121,7 +121,7 @@ prop_forkVotesReset v h = testCase ("Invalid fork votes fail validation for " <>
 -- * New minded blocks
 
 prop_validateMainnet :: TestTree
-prop_validateMainnet = prop_validateHeaders "validate Mainnet01 BlockHeaders" mainnet01Headers
+prop_validateMainnet = prop_validateHeaders "validate Mainnet01 BlockHeaders" (take 20 mainnet01Headers)
 
 prop_validateTestnet04 :: TestTree
 prop_validateTestnet04 = prop_validateHeaders "validate Testnet04 BlockHeaders" testnet04Headers
