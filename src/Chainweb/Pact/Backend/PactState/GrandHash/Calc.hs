@@ -244,7 +244,9 @@ chainHashesToModule v input = prefix
         go = \case
           [] -> error "mis-use of embedQuotes"
           [_] -> error "mis-use of embedQuotes"
-          xs -> List.init xs ++ "\\\"" ++ [List.last xs]
+          xs -> case reverse xs of
+            l : lsRev -> reverse lsRev ++ "\\\"" ++ [l]
+            [] -> error "mis-use of embedQuotes"
 
     prepend :: String -> (String -> String)
     prepend p = \s -> p ++ s

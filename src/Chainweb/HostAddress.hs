@@ -441,8 +441,13 @@ hostAddressParser b = HostAddress
     hostnameParser'
         = HostnameName (CI.mk host) <$ hostNameParser
         <|> HostnameIPv4 (CI.mk host) <$ ipV4Parser
-        <|> HostnameIPv6 (CI.mk $ B8.init $ B8.tail host) <$ "[" <* ipV6Parser <* "]"
+        <|> HostnameIPv6 (CI.mk $ stripIpv6Brackets host) <$ "[" <* ipV6Parser <* "]"
         <?> "host"
+    stripIpv6Brackets h = case B8.uncons h of
+        Just ('[', rest) -> case B8.unsnoc rest of
+            Just (inner, ']') -> inner
+            _ -> error "hostAddressParser: invalid bracketed IPv6 host"
+        _ -> error "hostAddressParser: invalid bracketed IPv6 host"
 
 hostAddressToText :: HostAddress -> T.Text
 hostAddressToText = T.decodeUtf8 . hostAddressBytes
