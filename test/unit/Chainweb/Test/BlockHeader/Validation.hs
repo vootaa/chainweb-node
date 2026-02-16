@@ -27,6 +27,7 @@ import Chainweb.BlockHeader.Validation
 import Chainweb.BlockHeight
 import Chainweb.Difficulty
 import Chainweb.ForkState
+import Chainweb.PowHash (cryptoHash)
 import Chainweb.Graph hiding (AdjacentChainMismatch)
 import Chainweb.Test.Orphans.Internal ()
 import Chainweb.Test.TestVersions
@@ -35,11 +36,16 @@ import Chainweb.Time
 import Chainweb.Utils hiding ((==>))
 import Chainweb.Utils.Serialization
 import Chainweb.Version
+import Chainweb.Version.Icosa
 import Chainweb.Version.Mainnet
+import Chainweb.Version.Mono
 import Chainweb.Version.RecapDevelopment
+import Chainweb.Version.Registry (lookupVersionByCode)
 import Chainweb.Version.Testnet04
+import Chainweb.Version.Triad
 import Control.Lens hiding ((.=), elements)
 import Control.Monad.Catch
+import Crypto.Hash.Algorithms (Blake2b_256, Blake2s_256)
 import Data.Aeson
 import Data.Bits
 import Data.ByteString qualified as B
@@ -50,6 +56,7 @@ import Data.List (sort)
 import Data.List qualified as L
 import Data.Ratio
 import Data.Text qualified as T
+import Data.Text.Encoding qualified as T
 import Numeric.AffineSpace
 import Test.QuickCheck
 import Test.Tasty
@@ -73,6 +80,7 @@ tests = testGroup "Chainweb.Test.Blockheader.Validation"
     , testProperty "validate arbitrary test header for mainnet" $ prop_validateArbitrary Mainnet01
     , testProperty "validate arbitrary test header for testnet04" $ prop_validateArbitrary Testnet04
     , testProperty "validate arbitrary test header for devnet" $ prop_validateArbitrary RecapDevelopment
+    , prop_pow_blake2b_domain_prefix
     ]
 
 -- -------------------------------------------------------------------------- --
@@ -208,6 +216,42 @@ validateTestHeader h = case try val of
     val = validateBlockHeaderM now (testHeaderChainLookup h) (_testHeaderHdr h)
     verify :: [ValidationFailureType] -> Property
     verify es = L.delete IncorrectPow es === []
+
+-- -------------------------------------------------------------------------- --
+-- PoW Algorithm and Domain-Prefix Invariants
+
+prop_pow_blake2b_domain_prefix :: TestTree
+prop_pow_blake2b_domain_prefix = testGroup "pow Blake2b + domain prefix"
+    [ testCase "_blockPow matches Blake2b_256(prefix <> headerBytes)"
+        (forM_ samples checkSample)
+
+    , testCase "domain prefix separates hash for same header bytes"
+    (let hdr = _testHeaderHdr (genesisTestHeaders Mono !! 0)
+             bytes = runPutS (encodeBlockHeaderWithoutHash hdr)
+       hMono = cryptoHash @Blake2b_256 (vootaaPrefix (_versionCode Mono) <> bytes)
+       hTriad = cryptoHash @Blake2b_256 (vootaaPrefix (_versionCode Triad) <> bytes)
+       hIcosa = cryptoHash @Blake2b_256 (vootaaPrefix (_versionCode Icosa) <> bytes)
+     in assertBool
+        "Different domain prefixes should produce different pow hashes"
+        (hMono /= hTriad && hTriad /= hIcosa && hMono /= hIcosa))
+    ]
+  where
+    samples =
+    [ ("mono", _testHeaderHdr (genesisTestHeaders Mono !! 0))
+    , ("triad", _testHeaderHdr (genesisTestHeaders Triad !! 0))
+    , ("icosa", _testHeaderHdr (genesisTestHeaders Icosa !! 0))
+        ]
+
+    checkSample (sampleName, hdr) = do
+        let input = vootaaPrefix (_blockChainwebVersion hdr) <> runPutS (encodeBlockHeaderWithoutHash hdr)
+            expected = cryptoHash @Blake2b_256 input
+            legacy = cryptoHash @Blake2s_256 input
+        _blockPow hdr @?= expected
+        assertBool ("PoW unexpectedly equals legacy Blake2s_256 for " <> sampleName) (_blockPow hdr /= legacy)
+
+vootaaPrefix :: ChainwebVersionCode -> B.ByteString
+vootaaPrefix v =
+    "Vootaa-POW-PS1|" <> T.encodeUtf8 (getChainwebVersionName (_versionName (lookupVersionByCode v)))
 
 -- -------------------------------------------------------------------------- --
 -- Invalid Headers
