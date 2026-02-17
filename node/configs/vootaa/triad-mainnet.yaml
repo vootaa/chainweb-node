@@ -1,0 +1,12 @@
+target: triad-mainnet
+tier: mainnet
+chainwebVersion: triad
+graphOrder: 3
+ports:
+  service: 29380
+  p2p: 29381
+  miner: 29382
+paths:
+  dataDir: .vootaa/triad-mainnet
+pow:
+  disablePow: false

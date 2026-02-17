@@ -1,0 +1,12 @@
+target: icosa-mainnet
+tier: mainnet
+chainwebVersion: icosa
+graphOrder: 20
+ports:
+  service: 39380
+  p2p: 39381
+  miner: 39382
+paths:
+  dataDir: .vootaa/icosa-mainnet
+pow:
+  disablePow: false

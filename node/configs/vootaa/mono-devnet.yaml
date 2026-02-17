@@ -1,0 +1,12 @@
+target: mono-devnet
+tier: devnet
+chainwebVersion: mono
+graphOrder: 1
+ports:
+  service: 19180
+  p2p: 19181
+  miner: 19182
+paths:
+  dataDir: .vootaa/mono-devnet
+pow:
+  disablePow: true

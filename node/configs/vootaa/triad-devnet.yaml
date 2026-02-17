@@ -1,0 +1,12 @@
+target: triad-devnet
+tier: devnet
+chainwebVersion: triad
+graphOrder: 3
+ports:
+  service: 29180
+  p2p: 29181
+  miner: 29182
+paths:
+  dataDir: .vootaa/triad-devnet
+pow:
+  disablePow: true

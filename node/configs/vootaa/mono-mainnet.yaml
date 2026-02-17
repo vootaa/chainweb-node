@@ -1,0 +1,12 @@
+target: mono-mainnet
+tier: mainnet
+chainwebVersion: mono
+graphOrder: 1
+ports:
+  service: 19380
+  p2p: 19381
+  miner: 19382
+paths:
+  dataDir: .vootaa/mono-mainnet
+pow:
+  disablePow: false
