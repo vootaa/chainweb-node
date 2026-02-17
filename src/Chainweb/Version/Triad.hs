@@ -20,8 +20,8 @@ import Chainweb.Version
 
 import Pact.Types.Verifier
 
-import qualified Chainweb.BlockHeader.Genesis.Development0Payload as DN0
-import qualified Chainweb.BlockHeader.Genesis.Development1to19Payload as DNN
+import qualified Chainweb.BlockHeader.Genesis.Triad0Payload as T0
+import qualified Chainweb.BlockHeader.Genesis.Triad1to2Payload as T12
 
 pattern Triad :: ChainwebVersion
 pattern Triad <- ((== triad) -> True) where
@@ -43,9 +43,9 @@ triad = ChainwebVersion
         { _genesisBlockTarget = AllChains $ HashTarget (maxBound `div` 100_000)
         , _genesisTime = AllChains $ BlockCreationTime [timeMicrosQQ| 2019-07-17T18:28:37.613832 |]
         , _genesisBlockPayload = onChains
-            [ (unsafeChainId 0, DN0.payloadBlock)
-            , (unsafeChainId 1, DNN.payloadBlock)
-            , (unsafeChainId 2, DNN.payloadBlock)
+            [ (unsafeChainId 0, T0.payloadBlock)
+            , (unsafeChainId 1, T12.payloadBlock)
+            , (unsafeChainId 2, T12.payloadBlock)
             ]
         }
 

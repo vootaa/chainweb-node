@@ -8,8 +8,8 @@
 module Chainweb.Version.Icosa (icosa, pattern Icosa) where
 
 import Chainweb.BlockCreationTime
-import qualified Chainweb.BlockHeader.Genesis.Development0Payload as DN0
-import qualified Chainweb.BlockHeader.Genesis.Development1to19Payload as DNN
+import qualified Chainweb.BlockHeader.Genesis.Icosa0Payload as I0
+import qualified Chainweb.BlockHeader.Genesis.Icosa1to19Payload as I119
 import Chainweb.ChainId
 import Chainweb.Difficulty
 import Chainweb.Graph
@@ -44,8 +44,8 @@ icosa =
             _genesisTime = AllChains $ BlockCreationTime [timeMicrosQQ| 2019-07-17T18:28:37.613832 |],
             _genesisBlockPayload =
               onChains
-                ( (unsafeChainId 0, DN0.payloadBlock)
-                    : [(unsafeChainId i, DNN.payloadBlock) | i <- [1 .. 19]]
+                ( (unsafeChainId 0, I0.payloadBlock)
+                    : [(unsafeChainId i, I119.payloadBlock) | i <- [1 .. 19]]
                 )
           },
       _versionMaxBlockGasLimit = Bottom (minBound, Nothing),

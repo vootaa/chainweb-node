@@ -85,6 +85,9 @@ main = do
       , quirkedPact5Instantnet
       , testnet04
       , mainnet
+      , mono
+      , triad
+      , icosa
       , genTxModules
       , genCoinV3Payloads
       , genCoinV4Payloads
@@ -121,6 +124,9 @@ main = do
       , mainnet9
       , mainnetKAD
       ]
+    mono = mkPayloads [mono0]
+    triad = mkPayloads [triad0, triadN]
+    icosa = mkPayloads [icosa0, icosaN]
 
 show_ :: ChainIdRange -> String
 show_ (ChainIdRange n n')

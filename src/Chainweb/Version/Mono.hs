@@ -20,7 +20,7 @@ import Chainweb.Version
 
 import Pact.Types.Verifier
 
-import qualified Chainweb.BlockHeader.Genesis.Development0Payload as DN0
+import qualified Chainweb.BlockHeader.Genesis.Mono0Payload as M0
 
 pattern Mono :: ChainwebVersion
 pattern Mono <- ((== mono) -> True) where
@@ -42,7 +42,7 @@ mono = ChainwebVersion
         { _genesisBlockTarget = AllChains $ HashTarget (maxBound `div` 100_000)
         , _genesisTime = AllChains $ BlockCreationTime [timeMicrosQQ| 2019-07-17T18:28:37.613832 |]
         , _genesisBlockPayload = onChains
-            [ (unsafeChainId 0, DN0.payloadBlock)
+            [ (unsafeChainId 0, M0.payloadBlock)
             ]
         }
 

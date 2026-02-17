@@ -135,6 +135,11 @@ library
         , Chainweb.BlockHeader.Genesis.RecapDevelopment10to19Payload
         , Chainweb.BlockHeader.Genesis.Development0Payload
         , Chainweb.BlockHeader.Genesis.Development1to19Payload
+        , Chainweb.BlockHeader.Genesis.Mono0Payload
+        , Chainweb.BlockHeader.Genesis.Triad0Payload
+        , Chainweb.BlockHeader.Genesis.Triad1to2Payload
+        , Chainweb.BlockHeader.Genesis.Icosa0Payload
+        , Chainweb.BlockHeader.Genesis.Icosa1to19Payload
         , Chainweb.BlockHeader.Genesis.FastTimedCPM0Payload
         , Chainweb.BlockHeader.Genesis.FastTimedCPM1to9Payload
         , Chainweb.BlockHeader.Genesis.InstantTimedCPM0Payload

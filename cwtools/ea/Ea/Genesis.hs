@@ -20,6 +20,13 @@ module Ea.Genesis
 , fastDevelopment0
 , fastDevelopmentN
 
+  -- * Vootaa Genesis txs
+, mono0
+, triad0
+, triadN
+, icosa0
+, icosaN
+
   -- * Testing Genesis Txs
 , fastTimedCPM0
 , fastTimedCPMN
@@ -74,9 +81,12 @@ import Chainweb.Graph
 import Chainweb.Test.TestVersions
 import Chainweb.Version
 import Chainweb.Version.Development
-import Chainweb.Version.RecapDevelopment
+import Chainweb.Version.Icosa
 import Chainweb.Version.Mainnet
+import Chainweb.Version.Mono
+import Chainweb.Version.RecapDevelopment
 import Chainweb.Version.Testnet04
+import Chainweb.Version.Triad
 
 -- ---------------------------------------------------------------------- --
 -- Genesis Tx Data
@@ -336,6 +346,96 @@ fastNGrants = "pact/genesis/devnet/grantsN.yaml"
 
 fastAllocations :: FilePath
 fastAllocations = "pact/genesis/devnet/allocations.yaml"
+
+-- ---------------------------------------------------------------------- --
+-- Vootaa networks
+
+mono0 :: Genesis
+mono0 = Genesis
+  { _version = Mono
+  , _tag = "Mono"
+  , _txChainIds = onlyChainId 0
+  , _coinbase = Just vootaaMonoGrants0
+  , _keysets = Just vootaaMonoKeysets
+  , _allocations = Nothing
+  , _namespaces = Just vootaaMonoNs
+  , _coinContract = [fungibleAssetV1, fungibleXChainV1, fungibleAssetV2, installCoinContractV6, gasPayer]
+  }
+
+triad0 :: Genesis
+triad0 = Genesis
+  { _version = Triad
+  , _tag = "Triad"
+  , _txChainIds = onlyChainId 0
+  , _coinbase = Just vootaaTriadGrants0
+  , _keysets = Just vootaaTriadKeysets
+  , _allocations = Just vootaaTriadAllocations
+  , _namespaces = Just vootaaTriadNs
+  , _coinContract = [fungibleAssetV1, fungibleXChainV1, fungibleAssetV2, installCoinContractV6, gasPayer]
+  }
+
+triadN :: Genesis
+triadN = triad0
+  & txChainIds .~ mkChainIdRange 1 2
+  & coinbase ?~ vootaaTriadGrantsN
+  & allocations .~ Nothing
+
+icosa0 :: Genesis
+icosa0 = Genesis
+  { _version = Icosa
+  , _tag = "Icosa"
+  , _txChainIds = onlyChainId 0
+  , _coinbase = Just vootaaIcosaGrants0
+  , _keysets = Just vootaaIcosaKeysets
+  , _allocations = Just vootaaIcosaAllocations
+  , _namespaces = Just vootaaIcosaNs
+  , _coinContract = [fungibleAssetV1, fungibleXChainV1, fungibleAssetV2, installCoinContractV6, gasPayer]
+  }
+
+icosaN :: Genesis
+icosaN = icosa0
+  & txChainIds .~ mkChainIdRange 1 19
+  & coinbase ?~ vootaaIcosaGrantsN
+  & allocations .~ Nothing
+
+vootaaMonoKeysets :: FilePath
+vootaaMonoKeysets = "pact/genesis/vootaa/mono/keysets.yaml"
+
+vootaaMonoGrants0 :: FilePath
+vootaaMonoGrants0 = "pact/genesis/vootaa/mono/grants0.yaml"
+
+vootaaMonoNs :: FilePath
+vootaaMonoNs = "pact/genesis/vootaa/mono/ns.yaml"
+
+vootaaTriadKeysets :: FilePath
+vootaaTriadKeysets = "pact/genesis/vootaa/triad/keysets.yaml"
+
+vootaaTriadGrants0 :: FilePath
+vootaaTriadGrants0 = "pact/genesis/vootaa/triad/grants0.yaml"
+
+vootaaTriadGrantsN :: FilePath
+vootaaTriadGrantsN = "pact/genesis/vootaa/triad/grantsN.yaml"
+
+vootaaTriadAllocations :: FilePath
+vootaaTriadAllocations = "pact/genesis/vootaa/triad/allocations.yaml"
+
+vootaaTriadNs :: FilePath
+vootaaTriadNs = "pact/genesis/vootaa/triad/ns.yaml"
+
+vootaaIcosaKeysets :: FilePath
+vootaaIcosaKeysets = "pact/genesis/vootaa/icosa/keysets.yaml"
+
+vootaaIcosaGrants0 :: FilePath
+vootaaIcosaGrants0 = "pact/genesis/vootaa/icosa/grants0.yaml"
+
+vootaaIcosaGrantsN :: FilePath
+vootaaIcosaGrantsN = "pact/genesis/vootaa/icosa/grantsN.yaml"
+
+vootaaIcosaAllocations :: FilePath
+vootaaIcosaAllocations = "pact/genesis/vootaa/icosa/allocations.yaml"
+
+vootaaIcosaNs :: FilePath
+vootaaIcosaNs = "pact/genesis/vootaa/icosa/ns.yaml"
 
 -- ---------------------------------------------------------------------- --
 -- Testnet 04
