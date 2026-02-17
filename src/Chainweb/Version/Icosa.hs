@@ -40,7 +40,7 @@ icosa =
       _versionBootstraps = [],
       _versionGenesis =
         VersionGenesis
-          { _genesisBlockTarget = AllChains $ HashTarget (maxBound `div` 100_000),
+          { _genesisBlockTarget = AllChains maxTarget,
             _genesisTime = AllChains $ BlockCreationTime [timeMicrosQQ| 2019-07-17T18:28:37.613832 |],
             _genesisBlockPayload =
               onChains
