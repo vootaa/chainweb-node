@@ -49,7 +49,7 @@ mono = ChainwebVersion
     , _versionMaxBlockGasLimit = Bottom (minBound, Nothing)
     , _versionMinimumBlockHeaderHistory = Bottom (minBound, Nothing)
     , _versionCheats = VersionCheats
-        { _disablePow = True
+        { _disablePow = False
         , _fakeFirstEpochStart = False
         , _disablePact = False
         }
