@@ -168,6 +168,9 @@ coinContractV6 = "pact/coin-contract/load-coin-contract.yaml"
 installCoinContractV6 :: FilePath
 installCoinContractV6 = "pact/coin-contract/install-coin-contract.yaml"
 
+installCoinContractV6Mono :: FilePath
+installCoinContractV6Mono = "pact/coin-contract/install-coin-contract-mono.yaml"
+
 fungibleAssetV2 :: FilePath
 fungibleAssetV2 = "pact/coin-contract/v2/load-fungible-asset-v2.yaml"
 
@@ -355,11 +358,11 @@ mono0 = Genesis
   { _version = Mono
   , _tag = "Mono"
   , _txChainIds = onlyChainId 0
-  , _coinbase = Just vootaaMonoGrants0
-  , _keysets = Just vootaaMonoKeysets
+  , _coinbase = Nothing
+  , _keysets = Nothing
   , _allocations = Nothing
   , _namespaces = Just vootaaMonoNs
-  , _coinContract = [fungibleAssetV1, fungibleXChainV1, fungibleAssetV2, installCoinContractV6, gasPayer]
+  , _coinContract = [fungibleAssetV1, fungibleXChainV1, fungibleAssetV2, installCoinContractV6Mono, gasPayer]
   }
 
 triad0 :: Genesis
@@ -367,7 +370,7 @@ triad0 = Genesis
   { _version = Triad
   , _tag = "Triad"
   , _txChainIds = onlyChainId 0
-  , _coinbase = Just vootaaTriadGrants0
+  , _coinbase = Nothing
   , _keysets = Just vootaaTriadKeysets
   , _allocations = Just vootaaTriadAllocations
   , _namespaces = Just vootaaTriadNs
@@ -377,7 +380,8 @@ triad0 = Genesis
 triadN :: Genesis
 triadN = triad0
   & txChainIds .~ mkChainIdRange 1 2
-  & coinbase ?~ vootaaTriadGrantsN
+  & coinbase .~ Nothing
+  & keysets .~ Nothing
   & allocations .~ Nothing
 
 icosa0 :: Genesis
@@ -385,7 +389,7 @@ icosa0 = Genesis
   { _version = Icosa
   , _tag = "Icosa"
   , _txChainIds = onlyChainId 0
-  , _coinbase = Just vootaaIcosaGrants0
+  , _coinbase = Nothing
   , _keysets = Just vootaaIcosaKeysets
   , _allocations = Just vootaaIcosaAllocations
   , _namespaces = Just vootaaIcosaNs
@@ -395,26 +399,15 @@ icosa0 = Genesis
 icosaN :: Genesis
 icosaN = icosa0
   & txChainIds .~ mkChainIdRange 1 19
-  & coinbase ?~ vootaaIcosaGrantsN
+  & coinbase .~ Nothing
+  & keysets .~ Nothing
   & allocations .~ Nothing
-
-vootaaMonoKeysets :: FilePath
-vootaaMonoKeysets = "pact/genesis/vootaa/mono/keysets.yaml"
-
-vootaaMonoGrants0 :: FilePath
-vootaaMonoGrants0 = "pact/genesis/vootaa/mono/grants0.yaml"
 
 vootaaMonoNs :: FilePath
 vootaaMonoNs = "pact/genesis/vootaa/mono/ns.yaml"
 
 vootaaTriadKeysets :: FilePath
 vootaaTriadKeysets = "pact/genesis/vootaa/triad/keysets.yaml"
-
-vootaaTriadGrants0 :: FilePath
-vootaaTriadGrants0 = "pact/genesis/vootaa/triad/grants0.yaml"
-
-vootaaTriadGrantsN :: FilePath
-vootaaTriadGrantsN = "pact/genesis/vootaa/triad/grantsN.yaml"
 
 vootaaTriadAllocations :: FilePath
 vootaaTriadAllocations = "pact/genesis/vootaa/triad/allocations.yaml"
@@ -424,12 +417,6 @@ vootaaTriadNs = "pact/genesis/vootaa/triad/ns.yaml"
 
 vootaaIcosaKeysets :: FilePath
 vootaaIcosaKeysets = "pact/genesis/vootaa/icosa/keysets.yaml"
-
-vootaaIcosaGrants0 :: FilePath
-vootaaIcosaGrants0 = "pact/genesis/vootaa/icosa/grants0.yaml"
-
-vootaaIcosaGrantsN :: FilePath
-vootaaIcosaGrantsN = "pact/genesis/vootaa/icosa/grantsN.yaml"
 
 vootaaIcosaAllocations :: FilePath
 vootaaIcosaAllocations = "pact/genesis/vootaa/icosa/allocations.yaml"

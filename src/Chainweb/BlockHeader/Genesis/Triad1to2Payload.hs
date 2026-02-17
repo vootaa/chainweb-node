@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Chainweb.BlockHeader.Genesis.Triad1to2Payload (payloadBlock) where
 
 import Chainweb.Payload

@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Chainweb.BlockHeader.Genesis.Icosa0Payload (payloadBlock) where
 
 import Chainweb.Payload
