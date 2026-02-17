@@ -149,10 +149,14 @@ import Chainweb.Utils.Paging
 import Chainweb.Utils.Rule (ruleElems)
 import Chainweb.Utils.Serialization
 import Chainweb.Version
+import Chainweb.Version.Icosa
+import Chainweb.Version.IcosaDev
+import Chainweb.Version.Mono
+import Chainweb.Version.MonoDev
 import Chainweb.Version.RecapDevelopment
-import Chainweb.Version.Mainnet
 import Chainweb.Version.Registry
-import Chainweb.Version.Testnet04
+import Chainweb.Version.Triad
+import Chainweb.Version.TriadDev
 import Chainweb.Version.Utils
 
 import Data.Singletons
@@ -194,9 +198,13 @@ instance Arbitrary ChainwebVersion where
         , timedConsensusVersion petersenChainGraph petersenChainGraph
         , timedConsensusVersion singletonChainGraph pairChainGraph
         , timedConsensusVersion petersenChainGraph twentyChainGraph
+        , Mono
+        , Triad
+        , Icosa
+        , MonoDev
+        , TriadDev
+        , IcosaDev
         , RecapDevelopment
-        , Testnet04
-        , Mainnet01
         ]
 
 instance Arbitrary ChainwebVersionName where

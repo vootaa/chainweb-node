@@ -53,12 +53,12 @@ icosa =
       _versionCheats =
         VersionCheats
           { _disablePow = True,
-            _fakeFirstEpochStart = True,
+            _fakeFirstEpochStart = False,
             _disablePact = False
           },
       _versionDefaults =
         VersionDefaults
-          { _disablePeerValidation = True,
+          { _disablePeerValidation = False,
             _disableMempoolSync = False
           },
       _versionVerifierPluginNames =

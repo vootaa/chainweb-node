@@ -71,7 +71,7 @@ import Chainweb.Time
 import Chainweb.Utils
 import Chainweb.Utils.RequestLog
 import Chainweb.Version
-import Chainweb.Version.Mainnet
+import Chainweb.Version.MonoDev
 import Chainweb.Version.Registry
 import Configuration.Utils hiding (Error)
 import Configuration.Utils.Validation (validateFilePath)
@@ -120,7 +120,7 @@ makeLenses ''ChainwebNodeConfiguration
 
 defaultChainwebNodeConfiguration :: ChainwebNodeConfiguration
 defaultChainwebNodeConfiguration = ChainwebNodeConfiguration
-    { _nodeConfigChainweb = defaultChainwebConfiguration Mainnet01
+    { _nodeConfigChainweb = defaultChainwebConfiguration monoDev
     , _nodeConfigLog = defaultLogConfig
         & logConfigLogger . L.loggerConfigThreshold .~ level
     , _nodeConfigDatabaseDirectory = Nothing

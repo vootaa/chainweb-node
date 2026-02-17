@@ -66,7 +66,6 @@ import Chainweb.Time
 import Chainweb.Utils
 import Chainweb.Version as V
 import Chainweb.Version.RecapDevelopment
-import Chainweb.Version.Mainnet
 import Chainweb.Test.Pact4.Utils
 import qualified Chainweb.Pact4.ModuleCache as Pact4
 
@@ -261,7 +260,7 @@ testCoinbase797DateFix = testCaseSteps "testCoinbase791Fix" $ \step -> do
     doCoinbaseExploit pdb mc height localCmd precompile testResult = do
       let ctx = Pact4.TxContext (mkTestParentHeader $ height - 1) noPublicMeta miner
 
-      void $ applyCoinbase Mainnet01 logger pdb 0.1 ctx
+      void $ applyCoinbase v logger pdb 0.1 ctx
         (EnforceCoinbaseFailure True) (Pact4.CoinbaseUsePrecompiled precompile) mc
 
       let h = H.toUntypedHash (H.hash "" :: H.PactHash)

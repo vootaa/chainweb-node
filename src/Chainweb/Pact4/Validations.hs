@@ -204,7 +204,7 @@ assertValidateSigs validSchemes webAuthnPrefixLegal hsh signers sigs = do
 -- prop_tx_ttl_newBlock/validateBlock
 --
 -- Timing checks used to be based on the creation time of the validated
--- block. That changed on mainnet at block height 449940. Tx creation time
+-- block. That changed on a legacy 20-chain network at block height 449940. Tx creation time
 -- and TTL don't affect the tx outputs and pact state and can thus be
 -- skipped when replaying old blocks.
 --

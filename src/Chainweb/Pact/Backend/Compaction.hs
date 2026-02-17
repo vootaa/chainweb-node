@@ -83,9 +83,10 @@ import Chainweb.Payload.PayloadStore.RocksDB (newPayloadDb)
 import Chainweb.Utils (sshow, fromText, toText, int)
 import Chainweb.Version (ChainId, ChainwebVersion(..), chainIdToText)
 import Chainweb.Version.Guards (minimumBlockHeaderHistory)
-import Chainweb.Version.Mainnet (mainnet)
+import Chainweb.Version.Icosa (icosa)
+import Chainweb.Version.Mono (mono)
 import Chainweb.Version.Registry (lookupVersionByName)
-import Chainweb.Version.Testnet04 (testnet04)
+import Chainweb.Version.Triad (triad)
 import Chainweb.WebBlockHeaderDB (getWebBlockHeaderDb, initWebBlockHeaderDb)
 import Data.LogMessage (SomeLogMessage, logText)
 
@@ -184,7 +185,7 @@ getConfig = do
 
     parser :: O.Parser Config
     parser = do
-      chainwebVersion <- parseVersion <$> O.strOption (O.long "chainweb-version" <> O.value "mainnet01")
+      chainwebVersion <- parseVersion <$> O.strOption (O.long "chainweb-version" <> O.value "mono")
       fromDir <- O.strOption (O.long "from" <> O.help "Directory containing SQLite Pact state and RocksDB block data to compact (expected to be in $DIR/0/{sqlite,rocksDb}")
       toDir <- O.strOption (O.long "to" <> O.help "Directory where to place the compacted Pact state and block data. It will place them in $DIR/0/{sqlite,rocksDb}, respectively.")
       concurrent <- O.flag SingleChain ManyChainsAtOnce (O.long "parallel" <> O.help "Turn on multi-threaded compaction. The threads are per-chain.")
@@ -196,7 +197,7 @@ getConfig = do
         )
       compactPactState <- not <$> O.switch
         (O.long "no-compact-pact"
-        <> O.help "Do not compact Pact state. Pact state is not used by any public interface, so it is compacted by default, and the space savings are usually large on mainnet."
+        <> O.help "Do not compact Pact state. Pact state is not used by any public interface, so it is compacted by default, and the space savings are usually large on production 20-chain networks."
         )
       compactTransactionIndex <- O.switch
         (O.long "compact-transaction-index"
@@ -633,7 +634,7 @@ getVersionedTableMutationRowsAt logger db target = do
 
 -- | Locate the latest "safe" target blockheight for compaction.
 --
---   In mainnet/testnet, this is determined
+--   In production networks, this is determined
 --   to be the @mininum (map latestBlockHeight chains) - 1000@.
 --
 --   In devnet, this is just the latest common blockheight
@@ -658,7 +659,7 @@ locateLatestSafeTarget logger v dbDir cids = do
   -- In devnet or testing versions we don't care.
   let safeDepth :: BlockHeight
       safeDepth
-        | v == mainnet || v == testnet04 = BlockHeight 1_000
+        | v `elem` [mono, triad, icosa] = BlockHeight 1_000
         | otherwise = BlockHeight 0
 
   when (latestCommon - earliestCommon < safeDepth) $ do

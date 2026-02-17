@@ -81,8 +81,6 @@ main = do
       , pact5Instantnet
       , pact53Transitionnet
       , quirkedPact5Instantnet
-      , testnet04
-      , mainnet
       , mono
       , triad
       , icosa
@@ -108,20 +106,6 @@ main = do
     pact5Instantnet = mkPayloads [pact5InstantCPM0, pact5InstantCPMN]
     pact53Transitionnet = mkPayloads [pact53TransitionCPM0, pact53TransitionCPMN]
     quirkedPact5Instantnet = mkPayloads [quirkedPact5InstantCPM0, quirkedPact5InstantCPMN]
-    testnet04 = mkPayloads [testnet040, testnet04N]
-    mainnet = mkPayloads
-      [ mainnet0
-      , mainnet1
-      , mainnet2
-      , mainnet3
-      , mainnet4
-      , mainnet5
-      , mainnet6
-      , mainnet7
-      , mainnet8
-      , mainnet9
-      , mainnetKAD
-      ]
     mono = mkPayloads [mono0]
     triad = mkPayloads [triad0, triadN]
     icosa = mkPayloads [icosa0, icosaN]
@@ -284,24 +268,13 @@ sep s f = go . toList
 genTxModules :: IO ()
 genTxModules = void $ do
     genDevTxs
-    genMainnetTxs
     genOtherTxs
-    gen20ChainRemeds
     putStrLn "Done."
   where
     gen tag remeds = genTxModule tag $ upgrades <> remeds
     genOtherTxs = gen "Other" []
     genDevTxs = gen "RecapDevelopment"
       ["pact/coin-contract/remediations/devother/remediations.yaml"]
-
-    genMain :: Int -> IO ()
-    genMain chain = gen ("Mainnet" <> sshow chain)
-      ["pact/coin-contract/remediations/mainnet/remediations" <> show chain <> ".yaml"]
-
-    genMainnetTxs = mapM_ genMain [0..9]
-
-    gen20ChainRemeds = genTxModule "MainnetKAD"
-      ["pact/coin-contract/remediations/mainnet/remediations20chain.yaml"]
 
     upgrades = [fungibleAssetV2, coinContractV2]
 

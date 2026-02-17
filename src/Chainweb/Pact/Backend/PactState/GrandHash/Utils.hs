@@ -39,7 +39,7 @@ import Chainweb.Storage.Table.RocksDB (RocksDb)
 import Chainweb.TreeDB (seekAncestor)
 import Chainweb.Utils (fromText, toText, sshow)
 import Chainweb.Version (ChainwebVersion(..))
-import Chainweb.Version.Mainnet (mainnet)
+import Chainweb.Version.Mono (mono)
 import Chainweb.Version.Registry (lookupVersionByName)
 import Chainweb.WebBlockHeaderDB (WebBlockHeaderDb, getWebBlockHeaderDb, initWebBlockHeaderDb)
 import Control.Exception (bracket)
@@ -225,7 +225,7 @@ cwvParser = fmap (lookupVersionByName . fromMaybe (error "ChainwebVersion parse 
         <> O.short 'v'
         <> O.metavar "CHAINWEB_VERSION"
         <> O.help "Chainweb version for graph. Only needed for non-standard graphs."
-        <> O.value (toText (_versionName mainnet))
+        <> O.value (toText (_versionName mono))
         <> O.showDefault
       )
 

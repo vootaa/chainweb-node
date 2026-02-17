@@ -60,8 +60,9 @@ import Chainweb.Miner.Pact (Miner(..), MinerKeys(..), MinerId(..), minerId)
 import Chainweb.Time
 import Chainweb.Utils (hostArch, sshow)
 import Chainweb.Version
-import Chainweb.Version.Mainnet
-import Chainweb.Version.Testnet04
+import Chainweb.Version.Icosa
+import Chainweb.Version.Mono
+import Chainweb.Version.Triad
 
 -- -------------------------------------------------------------------------- --
 
@@ -100,7 +101,7 @@ validateMinerConfig v c = do
     -- future we may also consider uname -m and/or cpuinfo (including flags) here.
     --
     supportedArchs = [ "x86_64" ]
-    isProd = v `elem` [Mainnet01, Testnet04]
+    isProd = v `elem` [Mono, Triad, Icosa]
 
 -- | Full configuration for Mining.
 --

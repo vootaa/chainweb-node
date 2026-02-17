@@ -20,7 +20,7 @@
 --
 -- `localPOW` is capable of mining on production networks and is used for
 -- in-node mining on the development and test networks. However, single threaded
--- CPU mining is by far not powerful enough to win blocks on mainnet.
+-- CPU mining is by far not powerful enough to win blocks on production networks.
 --
 module Chainweb.Miner.Miners
   ( -- * Local Mining

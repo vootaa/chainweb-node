@@ -1,12 +1,12 @@
-target: icosa-devnet
-tier: devnet
-chainwebVersion: icosa
+target: icosa-dev
+tier: dev
+chainwebVersion: icosa-dev
 graphOrder: 20
 ports:
   service: 39180
   p2p: 39181
   miner: 39182
 paths:
-  dataDir: .vootaa/icosa-devnet
+  dataDir: .vootaa/icosa-dev
 pow:
   disablePow: true

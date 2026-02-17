@@ -30,7 +30,7 @@ import Chainweb.Pact.Backend.Compaction qualified as C
 import Chainweb.Pact.Backend.PactState (TableDiffable(..), getLatestPactStateAtDiffable, doesPactDbExist, withChainDb, allChains)
 import Chainweb.Utils (fromText, toText)
 import Chainweb.Version (ChainwebVersion(..), ChainId, chainIdToText)
-import Chainweb.Version.Mainnet (mainnet)
+import Chainweb.Version.Mono (mono)
 import Chainweb.Version.Registry (lookupVersionByName)
 import Control.Monad (forM_, when, void)
 import Control.Monad.IO.Class (MonadIO(liftIO))
@@ -131,7 +131,7 @@ main = do
     parser = PactDiffConfig
       <$> strOption (long "first-database-dir" <> help "First Pact database directory")
       <*> strOption (long "second-database-dir" <> help "Second Pact database directory")
-      <*> fmap parseChainwebVersion (strOption (long "graph-version" <> help "Chainweb version for graph. Only needed for non-standard graphs." <> value (toText (_versionName mainnet)) <> showDefault))
+      <*> fmap parseChainwebVersion (strOption (long "graph-version" <> help "Chainweb version for graph. Only needed for non-standard graphs." <> value (toText (_versionName mono)) <> showDefault))
       <*> fmap (fromIntegral @Int) (option auto (long "target-blockheight" <> metavar "BLOCKHEIGHT" <> help "Target Blockheight"))
       <*> strOption (long "log-dir" <> help "Directory where logs will be placed" <> value ".")
 

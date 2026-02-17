@@ -39,23 +39,6 @@ module Ea.Genesis
 , quirkedPact5InstantCPM0
 , quirkedPact5InstantCPMN
 
-  -- * Testnet Genesis txs
-, testnet040
-, testnet04N
-
-  -- * Mainnet Genesis txs
-, mainnet0
-, mainnet1
-, mainnet2
-, mainnet3
-, mainnet4
-, mainnet5
-, mainnet6
-, mainnet7
-, mainnet8
-, mainnet9
-, mainnetKAD
-
   -- * Coin Contract genesis
 , coinContractV1
 , coinContractV2
@@ -82,10 +65,8 @@ import Chainweb.Test.TestVersions
 import Chainweb.Version
 import Chainweb.Version.Development
 import Chainweb.Version.Icosa
-import Chainweb.Version.Mainnet
 import Chainweb.Version.Mono
 import Chainweb.Version.RecapDevelopment
-import Chainweb.Version.Testnet04
 import Chainweb.Version.Triad
 
 -- ---------------------------------------------------------------------- --
@@ -117,7 +98,7 @@ chainIdRangeTag (ChainIdRange l u)
 --
 data Genesis = Genesis
     { _version :: ChainwebVersion
-      -- ^ chainweb version (e.g. Testnet04)
+  -- ^ chainweb version
     , _tag :: T.Text
       -- ^ Module name tag
     , _txChainIds :: ChainIdRange
@@ -424,148 +405,3 @@ vootaaIcosaAllocations = "pact/genesis/vootaa/icosa/allocations.yaml"
 vootaaIcosaNs :: FilePath
 vootaaIcosaNs = "pact/genesis/vootaa/icosa/ns.yaml"
 
--- ---------------------------------------------------------------------- --
--- Testnet 04
-
-testnet040 :: Genesis
-testnet040 = Genesis
-    { _version = Testnet04
-    , _tag = "Testnet04"
-    , _txChainIds = onlyChainId 0
-    , _coinbase = Just test0Grants
-    , _keysets = Just testnetKeysets
-    , _allocations = Just testnetAllocations
-    , _namespaces = Just testNs
-    , _coinContract = [fungibleAssetV1, coinContractV1, gasPayer]
-    }
-
-testnet04N :: Genesis
-testnet04N = testnet040
-    & txChainIds .~ mkChainIdRange 1 19
-    & coinbase ?~ testNGrants
-
-test0Grants :: FilePath
-test0Grants = "pact/genesis/testnet04/grants0.yaml"
-
-testNGrants :: FilePath
-testNGrants = "pact/genesis/testnet04/grantsN.yaml"
-
-testNs :: FilePath
-testNs = "pact/genesis/ns-v1.yaml"
-
-testnetAllocations :: FilePath
-testnetAllocations = "pact/genesis/testnet04/allocations.yaml"
-
-testnetKeysets :: FilePath
-testnetKeysets = "pact/genesis/testnet04/keysets.yaml"
-
--- ---------------------------------------------------------------------- --
--- Mainnet
-
-mainnet0 :: Genesis
-mainnet0 = Genesis
-    { _version = Mainnet01
-    , _tag = "Mainnet"
-    , _txChainIds = onlyChainId 0
-    , _coinbase = Nothing
-    , _keysets = Just mainnetKeysets
-    , _allocations = Just mainnetAllocations0
-    , _namespaces = Just mainNs
-    , _coinContract = [fungibleAssetV1, coinContractV1, gasPayer]
-    }
-
-mainnet1 :: Genesis
-mainnet1 = mainnet0
-    & txChainIds .~ onlyChainId 1
-    & allocations ?~ mainnetAllocations1
-
-mainnet2 :: Genesis
-mainnet2 = mainnet0
-    & txChainIds .~ onlyChainId 2
-    & allocations ?~ mainnetAllocations2
-
-mainnet3 :: Genesis
-mainnet3 = mainnet0
-    & txChainIds .~ onlyChainId 3
-    & allocations ?~ mainnetAllocations3
-
-mainnet4 :: Genesis
-mainnet4 = mainnet0
-    & txChainIds .~ onlyChainId 4
-    & allocations ?~ mainnetAllocations4
-
-mainnet5 :: Genesis
-mainnet5 = mainnet0
-    & txChainIds .~ onlyChainId 5
-    & allocations ?~ mainnetAllocations5
-
-mainnet6 :: Genesis
-mainnet6 = mainnet0
-    & txChainIds .~ onlyChainId 6
-    & allocations ?~ mainnetAllocations6
-
-mainnet7 :: Genesis
-mainnet7 = mainnet0
-    & txChainIds .~ onlyChainId 7
-    & allocations ?~ mainnetAllocations7
-
-mainnet8 :: Genesis
-mainnet8 = mainnet0
-    & txChainIds .~ onlyChainId 8
-    & allocations ?~ mainnetAllocations8
-
-mainnet9 :: Genesis
-mainnet9 = mainnet0
-    & txChainIds .~ onlyChainId 9
-    & allocations ?~ mainnetAllocations9
-
-mainnetKAD :: Genesis
-mainnetKAD = Genesis
-    { _version = Mainnet01
-    , _tag = "Mainnet"
-    , _txChainIds = mkChainIdRange 10 19
-    , _coinbase = Just mainnetKadOps
-    , _keysets = Nothing
-    , _allocations = Nothing
-    , _namespaces = Just mainNs
-    , _coinContract = [fungibleAssetV1, fungibleAssetV2, coinContractV2Install, gasPayer]
-    }
-
-mainnetKadOps :: FilePath
-mainnetKadOps = "pact/genesis/mainnet/kad-ops-grants.yaml"
-
-mainNs :: FilePath
-mainNs = "pact/genesis/mainnet/ns.yaml"
-
-mainnetAllocations0 :: FilePath
-mainnetAllocations0 = "pact/genesis/mainnet/mainnet_allocations0.yaml"
-
-mainnetAllocations1 :: FilePath
-mainnetAllocations1 = "pact/genesis/mainnet/mainnet_allocations1.yaml"
-
-mainnetAllocations2 :: FilePath
-mainnetAllocations2 = "pact/genesis/mainnet/mainnet_allocations2.yaml"
-
-mainnetAllocations3 :: FilePath
-mainnetAllocations3 = "pact/genesis/mainnet/mainnet_allocations3.yaml"
-
-mainnetAllocations4 :: FilePath
-mainnetAllocations4 = "pact/genesis/mainnet/mainnet_allocations4.yaml"
-
-mainnetAllocations5 :: FilePath
-mainnetAllocations5 = "pact/genesis/mainnet/mainnet_allocations5.yaml"
-
-mainnetAllocations6 :: FilePath
-mainnetAllocations6 = "pact/genesis/mainnet/mainnet_allocations6.yaml"
-
-mainnetAllocations7 :: FilePath
-mainnetAllocations7 = "pact/genesis/mainnet/mainnet_allocations7.yaml"
-
-mainnetAllocations8 :: FilePath
-mainnetAllocations8 = "pact/genesis/mainnet/mainnet_allocations8.yaml"
-
-mainnetAllocations9 :: FilePath
-mainnetAllocations9 = "pact/genesis/mainnet/mainnet_allocations9.yaml"
-
-mainnetKeysets :: FilePath
-mainnetKeysets = "pact/genesis/mainnet/mainnet_keysets.yaml"

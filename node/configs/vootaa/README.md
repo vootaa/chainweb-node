@@ -4,8 +4,8 @@ This folder stores static network profile templates for the Vootaa rollout.
 
 Profiles are grouped by network tier and topology:
 
-- Devnet: `mono-devnet`, `triad-devnet`, `icosa-devnet`
-- Mainnet: `mono-mainnet`, `triad-mainnet`, `icosa-mainnet`
+- Dev: `mono-dev`, `triad-dev`, `icosa-dev`
+- Main: `mono`, `triad`, `icosa`
 
 Each template defines isolated ports, data directory suffixes, and PoW mode.
 

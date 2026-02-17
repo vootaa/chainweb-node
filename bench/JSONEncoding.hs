@@ -19,7 +19,7 @@ module JSONEncoding
 ( benchmarks
 ) where
 
-import Chainweb.BlockHeader.Genesis.Mainnet0Payload
+import Chainweb.BlockHeader.Genesis.Mono0Payload
 
 import Control.Lens hiding ((.=))
 
@@ -44,7 +44,7 @@ import Chainweb.Payload
 import Chainweb.RestAPI.NodeInfo
 import Chainweb.Test.Orphans.Internal
 import Chainweb.Utils.Paging
-import Chainweb.Version.Mainnet
+import Chainweb.Version.Mono
 
 -- -------------------------------------------------------------------------- --
 -- Main
@@ -137,7 +137,7 @@ nodeInfo = unsafePerformIO $ generate arbitrary
 {-# NOINLINE nodeInfo #-}
 
 config :: ChainwebConfiguration
-config = defaultChainwebConfiguration Mainnet01
+config = defaultChainwebConfiguration Mono
 {-# NOINLINE config #-}
 
 headerPage :: Natural -> Page BlockHash BlockHeader

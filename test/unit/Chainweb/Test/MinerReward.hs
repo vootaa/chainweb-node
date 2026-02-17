@@ -21,7 +21,7 @@ import Chainweb.MinerReward
 import Chainweb.Test.Orphans.Internal ()
 import Chainweb.Utils
 import Chainweb.Version
-import Chainweb.Version.Mainnet
+import Chainweb.Version.Icosa
 
 import Data.ByteString.Lazy qualified as BL
 import Data.Csv qualified as CSV
@@ -86,7 +86,7 @@ prop_blockMinerRewardLegacyCompat h
         $ legacyBlockMinerReward v h === minerRewardKda (blockMinerReward v h)
 
   where
-    v = Mainnet01
+    v = icosa
 
 -- 2.304523
 --
@@ -98,7 +98,7 @@ test_finalMinerReward = do
     rewardIsZero h = assertEqual
         "The final miner reward is 0"
         (Kda 0)
-        (minerRewardKda (blockMinerReward Mainnet01 h))
+        (minerRewardKda (blockMinerReward icosa h))
 
 test_minerRewardsMax :: Assertion
 test_minerRewardsMax = assertBool
@@ -141,7 +141,7 @@ test_blockMinerRewardLegacyCompat = do
         [maxRewardHeight - 1]
         legacyCompatExceptions
   where
-    v = Mainnet01
+    v = icosa
     rewardsMatch h = assertEqual
         "miner reward value matches the legacy value"
         (legacyBlockMinerReward v h)

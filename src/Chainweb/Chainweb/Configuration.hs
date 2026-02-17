@@ -117,9 +117,11 @@ import Chainweb.Payload.RestAPI (PayloadBatchLimit(..), defaultServicePayloadBat
 import Chainweb.Utils
 import Chainweb.Version
 import Chainweb.Version.Development
+import Chainweb.Version.IcosaDev
+import Chainweb.Version.MonoDev
 import Chainweb.Version.RecapDevelopment
-import Chainweb.Version.Mainnet
 import Chainweb.Version.Registry
+import Chainweb.Version.TriadDev
 import Chainweb.Time
 
 import P2P.Node.Configuration
@@ -428,11 +430,11 @@ validateChainwebVersion v = do
     unless (isDevelopment || elem v knownVersions) $
         throwError $ T.unwords
             [ "Specifying version properties is only legal with chainweb-version"
-            , "set to recap-development or development, but version is set to"
+            , "set to a development class version (recap-development/development/mono-dev/triad-dev/icosa-dev), but version is set to"
             , sshow (_versionName v)
             ]
     where
-    isDevelopment = _versionCode v `elem` [_versionCode dv | dv <- [recapDevnet, devnet]]
+    isDevelopment = _versionCode v `elem` [_versionCode dv | dv <- [recapDevnet, devnet, monoDev, triadDev, icosaDev]]
 
 validateBackupConfig :: ConfigValidation BackupConfig []
 validateBackupConfig c =
@@ -497,7 +499,7 @@ instance ToJSON ChainwebConfiguration where
         ]
 
 instance FromJSON ChainwebConfiguration where
-    parseJSON = fmap ($ defaultChainwebConfiguration Mainnet01) . parseJSON
+    parseJSON = fmap ($ defaultChainwebConfiguration monoDev) . parseJSON
 
 instance FromJSON (ChainwebConfiguration -> ChainwebConfiguration) where
     parseJSON = withObject "ChainwebConfiguration" $ \o -> id

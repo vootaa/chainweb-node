@@ -12,7 +12,6 @@
 --
 module P2P.BootstrapNodes
 ( mainnetBootstrapHosts
-, testnet04BootstrapHosts
 ) where
 
 -- internal modules
@@ -45,22 +44,5 @@ mainnetBootstrapHosts = []
 --     , "jp3.chainweb.com:443"
 --     ]
 
--- -------------------------------------------------------------------------- --
--- | Testnet04 bootstrap nodes.
---
--- Nodes in this list need a public DNS name and a corresponding TLS
--- certificate. Operators of the nodes are expected to guarantee long term
--- availability of the nodes.
---
--- Please make a pull request, if you like to see your node being included here.
---
-testnet04BootstrapHosts :: [HostAddress]
-testnet04BootstrapHosts = []
--- testnet04BootstrapHosts = map unsafeHostAddressFromText
---     [ "us1.testnet.chainweb.com:443"
---     , "us2.testnet.chainweb.com:443"
---     , "eu1.testnet.chainweb.com:443"
---     , "eu2.testnet.chainweb.com:443"
---     , "ap1.testnet.chainweb.com:443"
 --     , "ap2.testnet.chainweb.com:443"
 --     ]

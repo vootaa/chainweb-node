@@ -449,7 +449,7 @@ noQuirks = VersionQuirks
     }
 
 -- | Chainweb versions are sets of properties that must remain consistent among
--- all nodes on the same network. For examples see `Chainweb.Version.Mainnet`,
+-- all nodes on the same network. For examples see `Chainweb.Version.Mono`,
 -- `Chainweb.Version.Testnet`, `Chainweb.Version.RecapDevelopment`, and
 -- `Chainweb.Test.TestVersions`.
 --

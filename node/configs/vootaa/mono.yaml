@@ -1,5 +1,5 @@
-target: mono-mainnet
-tier: mainnet
+target: mono
+tier: main
 chainwebVersion: mono
 graphOrder: 1
 ports:
@@ -7,6 +7,6 @@ ports:
   p2p: 19381
   miner: 19382
 paths:
-  dataDir: .vootaa/mono-mainnet
+  dataDir: .vootaa/mono
 pow:
   disablePow: false

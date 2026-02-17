@@ -8,8 +8,8 @@
 -- Stability: experimental
 --
 -- At certain points (in particular when decoding block headers) we need to be
--- able to look up ChainwebVersions by their version codes. We know of mainnet,
--- testnet, and devnet versions in prod code, but we don't know of testing
+-- able to look up ChainwebVersions by their version codes. We know of built-in
+-- runtime versions in prod code, but we don't know of testing
 -- versions, and we also don't know if the user has enabled a flag that modifies
 -- the devnet version, so we maintain a mutable registry mapping codes to
 -- versions in this module.
@@ -45,11 +45,12 @@ import GHC.Stack
 
 import Chainweb.Version
 import Chainweb.Version.Development
+import Chainweb.Version.IcosaDev
 import Chainweb.Version.Icosa
+import Chainweb.Version.MonoDev
 import Chainweb.Version.RecapDevelopment
-import Chainweb.Version.Mainnet
 import Chainweb.Version.Mono
-import Chainweb.Version.Testnet04
+import Chainweb.Version.TriadDev
 import Chainweb.Version.Triad
 import Chainweb.Utils.Rule
 -- temporarily left off because it doesn't validate
@@ -58,7 +59,7 @@ import Chainweb.Utils.Rule
 versionMap :: IORef (HashMap ChainwebVersionCode ChainwebVersion)
 versionMap = unsafePerformIO $ do
     traverse_ validateVersion knownVersions
-    newIORef $ HM.fromList [(_versionCode v, v) | v <- [mainnet, testnet04, mono, triad, icosa]]
+    newIORef $ HM.fromList [(_versionCode v, v) | v <- [mono, triad, icosa, monoDev, triadDev, icosaDev]]
 
 -- | Register a version into our registry by code, ensuring it contains no
 -- errors and there are no others registered with that code.
@@ -76,8 +77,8 @@ registerVersion v = do
 -- | Unregister a version from the registry. This is ONLY for testing versions.
 unregisterVersion :: HasCallStack => ChainwebVersion -> IO ()
 unregisterVersion v = do
-    if _versionCode v `elem` (_versionCode <$> [mainnet, testnet04, mono, triad, icosa])
-    then error "You cannot unregister mainnet, testnet04, mono, triad, or icosa versions"
+    if _versionCode v `elem` (_versionCode <$> [mono, triad, icosa, monoDev, triadDev, icosaDev])
+    then error "You cannot unregister built-in runtime versions"
     else atomicModifyIORef' versionMap $ \m -> (HM.delete (_versionCode v) m, ())
 
 validateVersion :: HasCallStack => ChainwebVersion -> IO ()
@@ -118,14 +119,12 @@ validateVersion v = do
 -- | Look up a version in the registry by code.
 lookupVersionByCode :: HasCallStack => ChainwebVersionCode -> ChainwebVersion
 lookupVersionByCode code
-    -- these two cases exist to ensure that the mainnet and testnet versions
-    -- cannot be accidentally replaced and are the most performant to look up.
-    -- registering them is still allowed, as long as they are not conflicting.
-    | code == _versionCode mainnet = mainnet
-    | code == _versionCode testnet04 = testnet04
     | code == _versionCode mono = mono
     | code == _versionCode triad = triad
     | code == _versionCode icosa = icosa
+    | code == _versionCode monoDev = monoDev
+    | code == _versionCode triadDev = triadDev
+    | code == _versionCode icosaDev = icosaDev
     | otherwise =
         -- Setting the version code here allows us to delay doing the lookup in
         -- the case that we don't actually need the version, just the code.
@@ -149,11 +148,12 @@ lookupVersionByCode code
 -- ObjectEncoded block header decoder and CutHashes decoder.
 lookupVersionByName :: HasCallStack => ChainwebVersionName -> ChainwebVersion
 lookupVersionByName name
-    | name == _versionName mainnet = mainnet
-    | name == _versionName testnet04 = testnet04
     | name == _versionName mono = mono
     | name == _versionName triad = triad
     | name == _versionName icosa = icosa
+    | name == _versionName monoDev = monoDev
+    | name == _versionName triadDev = triadDev
+    | name == _versionName icosaDev = icosaDev
     | otherwise = lookupVersion & versionName .~ name
   where
     lookupVersion = unsafeDupablePerformIO $ do
@@ -171,12 +171,12 @@ fabricateVersionWithName name =
 
 -- | Versions known to us by name.
 knownVersions :: [ChainwebVersion]
-knownVersions = [mainnet, testnet04, mono, triad, icosa, recapDevnet, devnet]
+knownVersions = [mono, triad, icosa, monoDev, triadDev, icosaDev]
 
 -- | Look up a known version by name, usually with `m` instantiated to some
 -- configuration parser monad.
 findKnownVersion :: MonadFail m => ChainwebVersionName -> m ChainwebVersion
 findKnownVersion vn =
     case find (\v -> _versionName v == vn) knownVersions of
-        Nothing -> fail $ T.unpack (getChainwebVersionName vn) <> " is not a known version: try development, mainnet01, testnet04, mono, triad, or icosa"
+        Nothing -> fail $ T.unpack (getChainwebVersionName vn) <> " is not a known version: try mono, triad, icosa, mono-dev, triad-dev, or icosa-dev"
         Just v -> return v

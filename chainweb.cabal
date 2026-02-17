@@ -150,19 +150,6 @@ library
         , Chainweb.BlockHeader.Genesis.Pact53TransitionTimedCPM1to9Payload
         , Chainweb.BlockHeader.Genesis.QuirkedGasPact5InstantTimedCPM0Payload
         , Chainweb.BlockHeader.Genesis.QuirkedGasPact5InstantTimedCPM1to9Payload
-        , Chainweb.BlockHeader.Genesis.Testnet040Payload
-        , Chainweb.BlockHeader.Genesis.Testnet041to19Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet0Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet1Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet2Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet3Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet4Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet5Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet6Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet7Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet8Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet9Payload
-        , Chainweb.BlockHeader.Genesis.Mainnet10to19Payload
         , Chainweb.BlockHeader.Validation
         , Chainweb.BlockHeaderDB
         , Chainweb.BlockHeaderDB.HeaderOracle
@@ -273,12 +260,13 @@ library
         , Chainweb.Version
         , Chainweb.Version.Development
         , Chainweb.Version.Guards
+        , Chainweb.Version.IcosaDev
         , Chainweb.Version.Icosa
-        , Chainweb.Version.Mainnet
+        , Chainweb.Version.MonoDev
         , Chainweb.Version.Mono
         , Chainweb.Version.RecapDevelopment
         , Chainweb.Version.Registry
-        , Chainweb.Version.Testnet04
+        , Chainweb.Version.TriadDev
         , Chainweb.Version.Triad
         , Chainweb.Version.Utils
         , Chainweb.WebBlockHeaderDB

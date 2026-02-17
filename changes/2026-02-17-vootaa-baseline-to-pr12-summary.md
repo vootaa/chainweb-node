@@ -34,7 +34,7 @@ Scope: Baseline snapshot (2026-02-14) to PR-12 completion
 6. PR-11 / PR-12
    - Scripted development flow expanded with gate + e2e chain.
    - Legacy targets blocked in new flow.
-   - 6-target matrix (devnet/mainnet) and profile templates added.
+   - 6-target matrix (mono/triad/icosa + mono-dev/triad-dev/icosa-dev) and profile templates added.
    - Isolation checks enforced for ports, data directories, and config files.
 
 ## Artifacts and traceability

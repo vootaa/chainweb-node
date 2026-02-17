@@ -122,8 +122,8 @@ import Chainweb.Test.Utils
 import Chainweb.Utils
 import Chainweb.Version
 import Chainweb.Version.Guards (minimumBlockHeaderHistory)
+import Chainweb.Version.RecapDevelopment
 import Chainweb.WebPactExecutionService
-import Chainweb.Version.Mainnet (mainnet)
 
 
 -- generating this cert and making an HTTP manager take quite a while relative
@@ -1127,7 +1127,7 @@ localTests baseRdb = let
                         , P.fun responseBody ? P.equals "Metadata validation failed: [\"Gas price decimal precision too high\"]"
                         ]
 
-                buildTextCmd mainnet (defaultCmd cid)
+                buildTextCmd RecapDevelopment (defaultCmd cid)
                     >>= local fx v cid (Just PreflightSimulation) Nothing Nothing
                     & P.throws ? P.match _FailureResponse ? P.checkAll
                         [ P.fun responseStatusCode ? P.equals badRequest400

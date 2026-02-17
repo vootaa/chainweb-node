@@ -35,9 +35,13 @@ import Chainweb.Utils
 import Chainweb.Utils.Rule
 import Chainweb.Utils.Serialization
 import Chainweb.Version
+import Chainweb.Version.Icosa
+import Chainweb.Version.IcosaDev
+import Chainweb.Version.Mono
+import Chainweb.Version.MonoDev
 import Chainweb.Version.RecapDevelopment
-import Chainweb.Version.Mainnet
-import Chainweb.Version.Testnet04
+import Chainweb.Version.Triad
+import Chainweb.Version.TriadDev
 
 tests :: TestTree
 tests = testGroup "ChainwebVersion properties"
@@ -51,8 +55,12 @@ tests = testGroup "ChainwebVersion properties"
 propForVersions :: String -> (ChainwebVersion -> Property) -> TestTree
 propForVersions desc prop = testGroup desc
     [ testProperty "arbitrary versions" $ prop
-    , testProperty "mainnet" $ prop Mainnet01
-    , testProperty "testnet04" $ prop Testnet04
+    , testProperty "mono" $ prop Mono
+    , testProperty "triad" $ prop Triad
+    , testProperty "icosa" $ prop Icosa
+    , testProperty "mono-dev" $ prop MonoDev
+    , testProperty "triad-dev" $ prop TriadDev
+    , testProperty "icosa-dev" $ prop IcosaDev
     , testProperty "recapDevnet" $ prop RecapDevelopment
     ]
 

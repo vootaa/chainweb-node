@@ -8,7 +8,7 @@ module Main (main) where
 import Chainweb.Chainweb.Configuration
 import Chainweb.HostAddress
 import Chainweb.Miner.Config
-import Chainweb.Version.Mainnet
+import Chainweb.Version.Mono
 import Control.Lens
 import Data.Maybe
 import Data.Text (Text)
@@ -64,7 +64,7 @@ getConf = do
     port <- getUserInput portMsg (Just 443) (return . portFromText) Nothing
     coord <- getUserInput mineCoordMsg (Just True) (return . yesorno2Bool) Nothing
     return $
-      defaultChainwebConfiguration Mainnet01
+      defaultChainwebConfiguration Mono
       & configMining . miningCoordination . coordinationEnabled .~ coord
       & configP2p . p2pConfigPeer . peerConfigAddr .~ HostAddress host port
   where
@@ -86,7 +86,7 @@ main = do
     exitSuccess
   where
     msg = "Would you like to write the configuration to " <> defaultfile <> "?"
-    defaultfile = "mainnet.yaml"
+    defaultfile = "mono.yaml"
     writeStuff c = do
         Y.encodeFile defaultfile c
         putStrLn ("Writing (possibly overwriting) configuration to file " <> defaultfile)

@@ -169,9 +169,7 @@ import Chainweb.Utils.Rule
 import Chainweb.Utils.Serialization
 import Chainweb.Version
 import Chainweb.Version.Guards
-import Chainweb.Version.Mainnet
 import Chainweb.Version.Registry (lookupVersionByName, lookupVersionByCode)
-import Chainweb.Version.Testnet04
 import Control.DeepSeq
 import Control.Exception
 import Control.Lens hiding ((.=))
@@ -452,7 +450,7 @@ isLastInEpoch h = case effectiveWindow h of
 --
 -- NOTE: emergency DAs are now regarded a misfeature and have been disabled in
 -- all chainweb version. Emergency DAs are enabled (and have occured) only on
--- mainnet01 for cut heights smaller than 80,000.
+-- a legacy network for cut heights smaller than 80,000.
 --
 slowEpoch :: ParentHeader -> BlockCreationTime -> Bool
 slowEpoch (ParentHeader p) (BlockCreationTime ct) = actual > (expected * 5)
@@ -695,9 +693,7 @@ genesisBlockHeaderCache = unsafePerformIO $ do
 --
 genesisBlockHeaders :: ChainwebVersion -> HashMap ChainId BlockHeader
 genesisBlockHeaders = \v ->
-    if _versionCode v == _versionCode mainnet then mainnetGenesisHeaders
-    else if _versionCode v == _versionCode testnet04 then testnetGenesisHeaders
-    else unsafeDupablePerformIO $ do
+    unsafeDupablePerformIO $ do
         m <- readIORef genesisBlockHeaderCache
         case HM.lookup (_versionCode v) m of
             Just hs -> return hs
@@ -705,9 +701,6 @@ genesisBlockHeaders = \v ->
                 let freshGenesisHeaders = makeGenesisBlockHeaders v
                 modifyIORef' genesisBlockHeaderCache $ HM.insert (_versionCode v) freshGenesisHeaders
                 return freshGenesisHeaders
-  where
-    mainnetGenesisHeaders = makeGenesisBlockHeaders mainnet
-    testnetGenesisHeaders = makeGenesisBlockHeaders testnet04
 
 genesisBlockHeader :: (HasCallStack, HasChainId p) => ChainwebVersion -> p -> BlockHeader
 genesisBlockHeader v p = genesisBlockHeaders v ^?! ix (_chainId p)

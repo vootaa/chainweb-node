@@ -37,11 +37,9 @@ import Chainweb.Utils hiding ((==>))
 import Chainweb.Utils.Serialization
 import Chainweb.Version
 import Chainweb.Version.Icosa
-import Chainweb.Version.Mainnet
 import Chainweb.Version.Mono
 import Chainweb.Version.RecapDevelopment
 import Chainweb.Version.Registry (lookupVersionByCode)
-import Chainweb.Version.Testnet04
 import Chainweb.Version.Triad
 import Control.Lens hiding ((.=), elements)
 import Control.Monad.Catch
@@ -68,8 +66,8 @@ import Test.Tasty.QuickCheck
 
 tests :: TestTree
 tests = testGroup "Chainweb.Test.Blockheader.Validation"
-    [ prop_validateMainnet
-    , prop_validateTestnet04
+  [ prop_validateIcosa
+  , prop_validateTriad
     , prop_fail_validate
     , prop_forkstate_validate
     , prop_da_validate
@@ -77,8 +75,8 @@ tests = testGroup "Chainweb.Test.Blockheader.Validation"
     , prop_forkVotesReset (barebonesTestVersion petersenChainGraph) 0
     , prop_forkVotesReset (barebonesTestVersion petersenChainGraph) (int forkEpochLength)
     , testProperty "validate arbitrary test header" prop_validateArbitrary
-    , testProperty "validate arbitrary test header for mainnet" $ prop_validateArbitrary Mainnet01
-    , testProperty "validate arbitrary test header for testnet04" $ prop_validateArbitrary Testnet04
+    , testProperty "validate arbitrary test header for icosa" $ prop_validateArbitrary Icosa
+    , testProperty "validate arbitrary test header for triad" $ prop_validateArbitrary Triad
     , testProperty "validate arbitrary test header for devnet" $ prop_validateArbitrary RecapDevelopment
     , prop_pow_blake2b_domain_prefix
     ]
@@ -117,14 +115,14 @@ prop_forkVotesReset v h = testCase ("Invalid fork votes fail validation for " <>
 -- Test rules with a representative set of existing block headers.
 --
 -- * Geneiss blocks
--- * mainnet01 history
+-- * reference 20-chain history
 -- * New minded blocks
 
-prop_validateMainnet :: TestTree
-prop_validateMainnet = prop_validateHeaders "validate Mainnet01 BlockHeaders" (take 20 mainnet01Headers)
+prop_validateIcosa :: TestTree
+prop_validateIcosa = prop_validateHeaders "validate Icosa BlockHeaders" (take 20 referenceHeaders)
 
-prop_validateTestnet04 :: TestTree
-prop_validateTestnet04 = prop_validateHeaders "validate Testnet04 BlockHeaders" testnet04Headers
+prop_validateTriad :: TestTree
+prop_validateTriad = prop_validateHeaders "validate Triad BlockHeaders" triadHeaders
 
 prop_validateHeaders :: String -> [TestHeader] -> TestTree
 prop_validateHeaders msg hdrs = testGroup msg $ do
@@ -191,7 +189,7 @@ validate_cases msg testCases = testCase msg $ do
 -- -------------------------------------------------------------------------- --
 -- Tests for Rule Guards:
 --
--- Required: there is an example in mainnet history where the guard is needed,
+-- Required: there is a historical example where the guard is needed,
 -- i.e. the guarded rule fails.
 --
 -- Triggers: rule is applied, consistent, and soud after guard triggered
@@ -340,7 +338,7 @@ validationFailures =
       )
     ]
   where
-    -- From mainnet
+    -- From historical 20-chain data
     hdr = testHeader
         [ "parent" .= t "AFHBANxHkLyt2kf7v54FAByxfFrR-pBP8iMLDNKO0SSt-ntTEh1IVT2E4mSPkq02AwACAAAAfaGIEe7a-wGT8OdEXz9RvlzJVkJgmEPmzk42bzjQOi0GAAAAjFsgdB2riCtIs0j40vovGGfcFIZmKPnxEXEekcV28eUIAAAAQcKA2py0L5t1Z1u833Z93V5N4hoKv_7-ZejC_QKTCzTtgKwxXj4Eovf97ELmo_iBruVLoK_Yann5LQIAAAAAALFMJ1gcC8oKW90MW2xY07gN10bM2-GvdC7fDvKDDwAPBwAAAJkPwMVeS7ZkAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOdsEAAAAAAAFAAAAT3hhzb-eBQAAAGFSDbQAAJru7keLmw3rHfSVm9wkTHWQBBTwEPwEg8RA99vzMuj-"
         , "header" .=  t "AEbpAIzqpiins1r8v54FAJru7keLmw3rHfSVm9wkTHWQBBTwEPwEg8RA99vzMuj-AwACAAAAy7QSAHoIeFj0JXide_co-OaEzzYWbeZhAfphXI8-IR0GAAAAa-PzO_zUmk1yLOyt2kD3iI6cehKqQ_KdK8D6qZ-X6X4IAAAA79Vw2kqbVDHm9WDzksFwxZcmx5OJJNW-ge7jVa3HiHbtgKwxXj4Eovf97ELmo_iBruVLoK_Yann5LQIAAAAAAL701u70FOrdivm6quNUsKgfi2L8zYHeyOI0j2gfP16jBwAAANz0ZdfSwLZkAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOtsEAAAAAAAFAAAAT3hhzb-eBQAAAPvI7fkAAFFuYkCHZRcNl1k3-A1EZvyPxhiFKdHZwZRTqos57aiO"
@@ -552,16 +550,16 @@ forkValidation =
     -- The remaining blocks are used to count votes.
     voteLength = int $ forkEpochLength - voteCountLength
 
-    hdr0 = mainnet01Headers !! 21
+    hdr0 = referenceHeaders !! 21
 
     -- fork epoch end
-    hdr1 = mainnet01Headers !! 22
+    hdr1 = referenceHeaders !! 22
 
     -- fork epoch start
-    hdr2 = mainnet01Headers !! 23
+    hdr2 = referenceHeaders !! 23
 
     -- vote block
-    hdr = mainnet01Headers !! 24
+    hdr = referenceHeaders !! 24
 
 -- -------------------------------------------------------------------------- --
 -- DA Validation
@@ -615,7 +613,7 @@ daValidation =
 
     expected = [IncorrectHash, IncorrectPow, AdjacentChainMismatch]
 
-    -- From mainnet
+    -- From historical 20-chain data
     hdr = set (h . blockChainwebVersion) (_versionCode RecapDevelopment)
         $ set (h . blockFlags) (newForkState hdrAdjs (view testHeaderParent hdr') parentFork)
         $ set (h . blockHeight) 600000
@@ -669,7 +667,7 @@ legacyDaValidation =
     h = testHeaderHdr
     p = testHeaderParent . parentHeader
 
-    -- From mainnet height 600000
+    -- From historical 20-chain height 600000
     hdr = testHeader
         [ "header" .= t "AAAAAAAAAAA_z6O3cKYFALWkfYX5u1mHlFtc6m2WzkGyfpxOiulPgdj213nd8hNCAwACAAAAKNL9BjFylWotmGlC3rla-zHjLWZCDGG47may6L1ae9kDAAAA7_-rMA7UiQz_XeraRer-t8P2e_8-Re9HI1RaWMmAyQAFAAAArdgCPhV4s40pYFtd33MfIvT_aNmSQC8BAl7Kszbi_m3ompSQKQSQuVbBqJHsmwTQvJlyxtaXrHyzZAAAAAAAAOtnvFu0Pe4bQU_3jXijQkKuxRQkwpmROWLrEcU4EmB3AAAAAP4UmaUADZnXBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwCcJAAAAAAAFAAAAomkWtXCmBQABfTg_apMwAEiTnEtTDSfsw05RrfAUyla41lBEhgeIvc01oE_HRwWw"
         , "parent" .= t "AAAAAAAAAACiaRa1cKYFAFmK5kokRr2Fr1ThRJgyGZMDeYdjtR39rDLQCJTCCRLAAwACAAAAqop56-rmaZlP3cJ8ovBMFh0b13YKJKusxDQ6e-rY5qYDAAAA6OdCZnblItB_EHfWRU8HoVTTa8JCG3bcsfHqSCPuLXkFAAAAiSc1iYB55Z_WBNNNbXbBYxorn4UE5e9To3pkGAyFVg1nyi1HTRbA2OW66_x5xU7Jgj8tiqTiDb5WZAAAAAAAAPoy4IlkdUrT13QLpkmjs-O_Tfcdin9_XxN5p5QYNzDzAAAAAC6_SZU0gpbXBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvycJAAAAAAAFAAAAim-83W-mBQAQDFzNxfwJALWkfYX5u1mHlFtc6m2WzkGyfpxOiulPgdj213nd8hNC"
@@ -681,18 +679,18 @@ legacyDaValidation =
         ]
 
 -- -------------------------------------------------------------------------- --
--- A representative collection of Mainnet01 Headers pairs
+-- A representative collection of 20-chain header pairs
 
--- | A representative collection of BlockHeader from the existing mainnet01
+-- | A representative collection of BlockHeader from existing 20-chain
 -- history.
 --
--- The first 20 headers are the genesis headers for mainnet01.
+-- The first 20 headers are the genesis headers for icosa.
 --
--- On mainnet the skipFeatureFlagValidationGuard was turned off at height
+-- In the historical network sample, skipFeatureFlagValidationGuard was turned off at height
 -- 530_500.
 --
-mainnet01Headers :: [TestHeader]
-mainnet01Headers = genesisTestHeaders Mainnet01 <>
+referenceHeaders :: [TestHeader]
+referenceHeaders = genesisTestHeaders Icosa <>
 
     -- 20: height 318266, skipFeatureFlagValidationGuard active, features used as
     -- nonce
@@ -762,12 +760,12 @@ mainnet01Headers = genesisTestHeaders Mainnet01 <>
         ]
     ]
 
-testnet04Headers :: [TestHeader]
-testnet04Headers = genesisTestHeaders Testnet04
+triadHeaders :: [TestHeader]
+triadHeaders = genesisTestHeaders Triad
 
--- TODO replace these by "interesting headers" form mainnet (e.g. fork block heights)
-_testnet04InvalidHeaders :: [(ParentHeader, BlockHeader, [ValidationFailureType])]
-_testnet04InvalidHeaders = some
+-- TODO replace these by "interesting headers" from reference history (e.g. fork block heights)
+_triadInvalidHeaders :: [(ParentHeader, BlockHeader, [ValidationFailureType])]
+_triadInvalidHeaders = some
   where
     f (p, h, e) = (,,)
         <$> (fmap ParentHeader . decode . wrap) p

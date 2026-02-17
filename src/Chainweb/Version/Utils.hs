@@ -88,7 +88,6 @@ import Chainweb.Graph
 import Chainweb.Utils
 import Chainweb.Utils.Rule
 import Chainweb.Version
-import Chainweb.Version.Mainnet
 
 import Pact.Types.Verifier
 
@@ -129,12 +128,7 @@ atCutHeight h = snd . fromJuste . M.lookupLE h
 -- @
 --
 chainGraphs :: HasChainwebVersion v => v -> M.Map BlockHeight ChainGraph
-chainGraphs = \case
-    (_chainwebVersion -> v)
-        | _versionCode v == _versionCode mainnet -> mainnetGraphs
-        | otherwise -> M.fromDistinctDescList . toList . ruleElems $ _versionGraphs v
-    where
-    mainnetGraphs = M.fromDistinctDescList . toList . ruleElems $ _versionGraphs mainnet
+chainGraphs = M.fromDistinctDescList . toList . ruleElems . _versionGraphs . _chainwebVersion
 
 -- | BlockHeight intervals for the chain graphs of a chainweb version up to a
 -- given block height.

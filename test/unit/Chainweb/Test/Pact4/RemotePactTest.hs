@@ -106,7 +106,6 @@ import Chainweb.Test.TestVersions
 import Chainweb.Time
 import Chainweb.Utils hiding (check)
 import Chainweb.Version
-import Chainweb.Version.Mainnet
 import Chainweb.Storage.Table.RocksDB
 import qualified Pact.Core.Command.Server as Pact5
 
@@ -735,7 +734,7 @@ localPreflightSimTest t cenv step = do
       "Gas price decimal precision too high"
 
     step "Execute preflight /local tx - network id mismatch"
-    cmd5 <- mkTx Mainnet01 mv =<< mkCmdBuilder sigs sid 1000 gp
+    cmd5 <- mkTx v mv =<< mkCmdBuilder sigs sid 1000 gp
     runClientFailureAssertion sid cenv cmd5 "Network id mismatch"
 
     step "Execute preflight /local tx - too many sigs"
