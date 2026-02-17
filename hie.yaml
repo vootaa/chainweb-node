@@ -1,0 +1,17 @@
+cradle:
+  multi:
+    - path: "./node/src"
+      config:
+        cradle:
+          cabal:
+            component: "exe:chainweb-node"
+    - path: "./src"
+      config:
+        cradle:
+          cabal:
+            component: "lib:chainweb"
+    - path: "./cwtools/ea"
+      config:
+        cradle:
+          cabal:
+            component: "cwtools:exe:ea"
