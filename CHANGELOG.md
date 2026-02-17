@@ -1,3 +1,18 @@
+# Revision history for Chainweb-Node
+
+## 2.33.0 (2026-02-17)
+
+This release captures the cumulative `cw-version` branch work for the Vootaa fork line.
+
+### Changes
+
+- Canonicalize runtime allowlist to six targets: `mono`, `triad`, `icosa`, `mono-dev`, `triad-dev`, `icosa-dev`, and wire new dev modules (`MonoDev`, `TriadDev`, `IcosaDev`) with new version codes (`0x00000020/21/22`).
+- Switch runtime defaults to the fork line (`monoDev`) in node/config decoding paths and keep production-network checks scoped to `mono|triad|icosa`.
+- Retire legacy runtime entrypoints (`mainnet01`, `testnet04`) from active startup paths while retaining only bounded compatibility where needed.
+- Remove legacy genesis payload modules and rewire genesis/config/template surfaces to active targets, including canonical `node/configs/vootaa/{mono,triad,icosa,mono-dev,triad-dev,icosa-dev}.yaml` naming.
+- Align PoW/domain-prefix validation baselines and associated tests with the active target matrix so node-side behavior remains consistent with mining-client updates.
+- Sync cwtools/genconf/bootstrap assumptions with the six-target model and update operator-facing docs/scripts references accordingly.
+
 ## 2.32.0 (2025-11-21)
 
 **The Kadena mainnet stopped producing blocks on 2025-11-15T23:26:15Z.**
