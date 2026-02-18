@@ -311,7 +311,9 @@ runNodesForSeconds
     -> (forall logger. Int -> StartedChainweb logger -> IO ())
     -> IO ()
 runNodesForSeconds loglevel write baseConf n (Seconds seconds) rdb pactDbDir inner = do
-    void $ timeout (int seconds * 1_000_000)
+    let timeoutGraceSeconds = 20
+        timeoutMicros = (int seconds + timeoutGraceSeconds) * 1_000_000
+    void $ timeout timeoutMicros
         $ runNodes loglevel write baseConf n rdb pactDbDir inner
 
 -- | Ensure that we can compact a live node(s).
