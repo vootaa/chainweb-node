@@ -734,7 +734,15 @@ localPreflightSimTest t cenv step = do
       "Gas price decimal precision too high"
 
     step "Execute preflight /local tx - network id mismatch"
-    cmd5 <- mkTx v mv =<< mkCmdBuilder sigs sid 1000 gp
+    cmd5 <- do
+      let pcid5 = Pact.ChainId $ chainIdToText sid
+          wrongNetworkId = Just $ Pact.NetworkId "wrong-network"
+      kps5 <- testKeyPairs sender00 Nothing
+      modifyMVar mv $ \nn -> do
+        let nonce = "nonce" <> sshow nn
+            pm = Pact.PublicMeta pcid5 "sender00" 1000 0.1 defaultMaxTTL
+        c <- Pact.mkExec "(+ 1 2)" A.Null (pm t) kps5 [] wrongNetworkId (Just nonce)
+        pure (succ nn, c)
     runClientFailureAssertion sid cenv cmd5 "Network id mismatch"
 
     step "Execute preflight /local tx - too many sigs"
