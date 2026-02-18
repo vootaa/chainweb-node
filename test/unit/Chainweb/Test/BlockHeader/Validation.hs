@@ -34,12 +34,13 @@ import Chainweb.Test.TestVersions
 import Chainweb.Test.Utils.TestHeader
 import Chainweb.Time
 import Chainweb.Utils hiding ((==>))
+import Chainweb.Utils.Rule (Rule(..))
 import Chainweb.Utils.Serialization
 import Chainweb.Version
 import Chainweb.Version.Icosa
 import Chainweb.Version.Mono
 import Chainweb.Version.RecapDevelopment
-import Chainweb.Version.Registry (lookupVersionByCode)
+import Chainweb.Version.Registry (lookupVersionByCode, registerVersion)
 import Chainweb.Version.Triad
 import Control.Lens hiding ((.=), elements)
 import Control.Monad.Catch
@@ -56,6 +57,7 @@ import Data.Ratio
 import Data.Text qualified as T
 import Data.Text.Encoding qualified as T
 import Numeric.AffineSpace
+import System.IO.Unsafe (unsafePerformIO)
 import Test.QuickCheck
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -64,8 +66,24 @@ import Test.Tasty.QuickCheck
 -- -------------------------------------------------------------------------- --
 -- Properties
 
+-- | Legacy mainnet01 stub version (code 5) for historical test header
+-- validation. Registered at module load time so that block header
+-- deserialization can look up version code 5.
+--
+_legacyMainnet01Stub :: ()
+_legacyMainnet01Stub = unsafePerformIO $ registerVersion v
+  where
+    v = RecapDevelopment
+        & versionCode .~ ChainwebVersionCode 5
+        & versionName .~ ChainwebVersionName "legacy-mainnet01"
+        & versionGraphs .~ (852054, twentyChainGraph) `Above` Bottom (minBound, petersenChainGraph)
+        & versionForks %~ HM.adjust (const $ AllChains $ ForkAtBlockHeight 530500) SkipFeatureFlagValidation
+        . HM.adjust (const $ AllChains $ ForkAtBlockHeight 852054) OldDAGuard
+        . HM.adjust (const $ AllChains $ ForkAtBlockHeight 452820) OldTargetGuard
+{-# NOINLINE _legacyMainnet01Stub #-}
+
 tests :: TestTree
-tests = testGroup "Chainweb.Test.Blockheader.Validation"
+tests = _legacyMainnet01Stub `seq` testGroup "Chainweb.Test.Blockheader.Validation"
   [ prop_validateIcosa
   , prop_validateTriad
     , prop_fail_validate
